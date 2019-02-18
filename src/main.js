@@ -73,7 +73,7 @@ app.post('/register', function(req, res) {
 		let passwordHash = sha.sha224(req.body.password + passwordSalt).toString('hex');
 		users.push({username: req.body.username, password: passwordHash});
 		fs.writeFileSync(rootDir + "/data/users.json", JSON.stringify(users, null, 2));
-		res.send("Successfully registered.");
+		res.send("Successfully registered.<br><a href=\"/login\">Login.</a>");
 	} else {
 		res.send("Invalid input.");
 	}
