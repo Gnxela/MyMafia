@@ -4,13 +4,16 @@ var fs = require('fs');
 var path = require('path');
 var io = require('socket.io')(http);
 var sha = require('sha2');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 
 //Allow post parameters in Express 4.15.
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
 	extended: true
 }));
+//Allow cookie parsing.
+app.use(cookieParser());
 
 global.rootDir = path.resolve(__dirname + "/..");
 global.passwordSalt = "gamesaltbvasd";
@@ -19,11 +22,19 @@ io.on('connection', function(socket) {
 });
 
 app.get('/', function(req, res) {
-	res.send("<a href=\"/login\">Login</a>|<a href=\"/register\">Register</a>");
+	if (isLoggedIn(req)) {
+		res.send("<a href=\"/game\">Play</a> | <a href=\"/logout\">Logout</a>");
+	} else {
+		res.send("<a href=\"/login\">Login</a> | <a href=\"/register\">Register</a>");
+	}
 });
 
 app.get('/game', function(req, res) {
-	res.sendFile(rootDir + "/data/pages/game.html");
+	if (isLoggedIn(req)) {
+		res.sendFile(rootDir + "/data/pages/game.html");
+	} else {
+		res.redirect("/");
+	}
 });
 
 app.get('/login', function(req, res) {
@@ -82,6 +93,23 @@ app.post('/register', function(req, res) {
 app.get('/loginSuccess', function(req, res) {
 	res.sendFile(rootDir + "/data/pages/loginSuccess.html");
 });
+
+app.get('/logout', function(req, res) {
+	res.sendFile(rootDir + "/data/pages/logout.html");
+});
+
+function isLoggedIn(req) {
+	let username = req.cookies.username;
+	let session = req.cookies.session;
+	let users = JSON.parse(fs.readFileSync(rootDir + "/data/users.json"));
+	for (let i = 0; i < users.length; i++) {
+		let user = users[i];
+		if (user.username == username && user.session == session) {
+			return true;
+		}
+	}
+	return false;
+}
 
 http.listen(9999, function() {
 	console.log("Listening on port 9999");
