@@ -1,7 +1,15 @@
 var api = {
 	HANDSHAKE: {action: "handshake", data: {username: "", session: ""}},
+	WELCOME: {action: "welcome", data: {}},
 	GET_MAP: {action: "getMap", data: {}}
 };
+
+api.on = function(socket, action, callback) {
+	if (!action) {
+		throw "Action is not defined.";
+	}
+	socket.on(action.action, callback);
+}
 
 api.emit = async function(socket, action, data, callback) {
 	if (!socket || !socket.emit) {
@@ -29,3 +37,7 @@ api.emitSync = async function(socket, action, data) {
 	await promise;
 	return xyz;
 }
+
+try {
+	var exports = module.exports = api;
+} catch (e) {}

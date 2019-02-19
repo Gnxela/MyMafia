@@ -1,10 +1,11 @@
 var map = {width: 0, height: 0, tiles: []};
+var api = require("./api.js");
 
 var exports = module.exports = {
 	registerSocket: function (socket) {
 		socket.join("all");
-		socket.on("getMap", map.getMap);
-		socket.emit("welcome");
+		api.on(socket, api.GET_MAP, map.getMap);
+		api.emit(socket, api.WELCOME, {});
 	}
 }
 
