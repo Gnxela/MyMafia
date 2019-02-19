@@ -1,1 +1,3 @@
 Create a layer over the api, that verifies the user etc.
+Create a lobby system for creating and joining games.
+Map generation.
