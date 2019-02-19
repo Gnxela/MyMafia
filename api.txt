@@ -1,5 +1,0 @@
-Server:
-	handshake(username, sessionID) -> null // Must be called when the client connects. Verifies the clients session and, once verified, allows the client to continue making API calls.
-	loadTiles(x, y, width, height) -> {tiles}
-
-Client:
