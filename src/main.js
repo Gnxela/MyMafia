@@ -7,6 +7,8 @@ var sha = require('sha2');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 
+var server = require('./server.js');
+
 //Allow post parameters in Express 4.15.
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -19,10 +21,17 @@ global.rootDir = path.resolve(__dirname + "/..");
 global.passwordSalt = "gamesaltbvasd";
 
 io.on('connection', function(socket) {
+	socket.on("handshake", function(data) {
+		if (isLoggedIn(data.username, data.session)) {
+			server.registerSocket(socket);
+		} else {
+			socket.disconnect(true);
+		}
+	});
 });
 
 app.get('/', function(req, res) {
-	if (isLoggedIn(req)) {
+	if (isLoggedIn(req.cookies.username, req.cookies.session)) {
 		res.send("<a href=\"/game\">Play</a> | <a href=\"/logout\">Logout</a>");
 	} else {
 		res.send("<a href=\"/login\">Login</a> | <a href=\"/register\">Register</a>");
@@ -30,7 +39,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/game', function(req, res) {
-	if (isLoggedIn(req)) {
+	if (isLoggedIn(req.cookies.username, req.cookies.session)) {
 		res.sendFile(rootDir + "/data/pages/game.html");
 	} else {
 		res.redirect("/");
@@ -98,9 +107,19 @@ app.get('/logout', function(req, res) {
 	res.sendFile(rootDir + "/data/pages/logout.html");
 });
 
-function isLoggedIn(req) {
-	let username = req.cookies.username;
-	let session = req.cookies.session;
+app.get('/loadResource/:resource', function(req, res) {
+	let resource = req.params.resource;
+	switch (resource) {
+	case "game.js":
+		res.sendFile(rootDir + "/src/client.js");
+		break;
+	default:
+		res.send("INVALID RESOURCE.");
+		break;
+	}
+});
+
+function isLoggedIn(username, session) {
 	let users = JSON.parse(fs.readFileSync(rootDir + "/data/users.json"));
 	for (let i = 0; i < users.length; i++) {
 		let user = users[i];
