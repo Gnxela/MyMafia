@@ -7,7 +7,7 @@ var sha = require('sha2');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 
-var server = require('./server.js');
+var server = require('./server/server.js');
 
 //Allow post parameters in Express 4.15.
 app.use(bodyParser.json());
