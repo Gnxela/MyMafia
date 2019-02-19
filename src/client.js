@@ -48,11 +48,10 @@ async function render() {
 }
 
 async function loadMap() {
-	await socket.emit("getMap", {}, (data) => {
-		map.width = data.width;
-		map.height = data.height;
-		map.tiles = data.tiles;
-	});
+	let data = await api.emitSync(socket, api.GET_MAP, {});
+	map.width = data.width;
+	map.height = data.height;
+	map.tiles = data.tiles;
 }
 
 function pointToTile(x, y) {
@@ -109,7 +108,7 @@ function handshake() {
 	socket.once("welcome", () => {
 		init();
 	});
-	socket.emit("handshake", user);
+	api.emit(socket, api.HANDSHAKE, user);
 }
 
 preload();

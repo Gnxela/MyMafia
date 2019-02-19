@@ -111,7 +111,7 @@ app.get('/loadResource/:resource', function(req, res) {
 	let resource = req.params.resource;
 	switch (resource) {
 	case "game.js":
-		res.sendFile(rootDir + "/src/client.js");
+		res.send(fs.readFileSync(rootDir + "/src/api.js") + fs.readFileSync(rootDir + "/src/client.js"));
 		break;
 	default:
 		res.send("INVALID RESOURCE.");
