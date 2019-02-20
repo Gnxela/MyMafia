@@ -1,6 +1,9 @@
 var api = {
 	HANDSHAKE: {action: "handshake", data: {username: "", session: ""}},
-	WELCOME: {action: "welcome", data: {}},
+	WELCOME: {action: "welcome", data: {games: {}}},
+	GET_GAMES: {action: "getGames", data: {}}
+	CREATE_GAME: {action: "createGame", data: {maxPlayers: 1, password: ""}}
+	JOIN_GAME: {action: "joinGame", data: {gameID: "", password: ""}}
 	GET_MAP: {action: "getMap", data: {}}
 };
 
