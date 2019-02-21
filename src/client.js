@@ -91,7 +91,15 @@ map.setTile = function(x, y, tile) {
 
 function preload() {
 	//Load resources etc.
+	setupSocket();
 	handshake();
+}
+
+function setupSocket() {
+	api.on(socket, api.DISCONNECT, (data) => {
+		console.log("Server disconnected socket. Reason: " + data.reason);
+		socket.disconnect(true);
+	});
 }
 
 function handshake() {
