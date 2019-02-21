@@ -1,6 +1,5 @@
 var socket = io();
 var canvas;
-var user = {};
 var map = {width: 0, height: 0, tiles: [], camera: {x: 0, y: 0}};
 var mouse = {down: false, x : 0, y : 0};
 
@@ -99,16 +98,16 @@ function handshake() {
 	let cookies = document.cookie.split("; ");
 	for (let i = 0; i < cookies.length; i++) {
 		if (cookies[i].startsWith("username=")) {
-			user.username = cookies[i].substring(9);
+			api.user. username = cookies[i].substring(9);
 		}
 		if (cookies[i].startsWith("session=")) {
-			user.session = cookies[i].substring(8);
+			api.user.session = cookies[i].substring(8);
 		}
 	}
-	socket.once("welcome", () => {
+	api.once(socket, api.WELCOME, () => {
 		init();
 	});
-	api.emit(socket, api.HANDSHAKE, user);
+	api.emit(socket, api.HANDSHAKE, {});
 }
 
 preload();

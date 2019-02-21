@@ -8,6 +8,23 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 
 var server = require('./server/server.js');
+var api = require('./api.js');
+api.use((socket, data) => {
+	if (!isLoggedIn(data.username, data.session)) {
+		api.emit(socket, api.DISCONNECT, {reason: "Invalid session."});
+		console.log("Disconnected " + data.session + " for invalid session.");
+		socket.disconnect(true);
+		return false;
+	}
+	let err = api.verifyData(api[data.action], data)
+	if (err) {
+		api.emit(socket, api.DISCONNECT, {reason: "Invalid data."});
+		console.log("Disconnected " + data.session + " for invalid data.");
+		socket.disconnect(true);
+		return false;
+	}
+	return true;
+});
 
 //Allow post parameters in Express 4.15.
 app.use(bodyParser.json());
@@ -21,12 +38,8 @@ global.rootDir = path.resolve(__dirname + "/..");
 global.passwordSalt = "gamesaltbvasd";
 
 io.on('connection', function(socket) {
-	socket.on("handshake", function(data) {
-		if (isLoggedIn(data.username, data.session)) {
-			server.registerSocket(socket);
-		} else {
-			socket.disconnect(true);
-		}
+	api.once(socket, api.HANDSHAKE, function(data) {
+		server.registerSocket(socket);
 	});
 });
 

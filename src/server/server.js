@@ -4,8 +4,8 @@ var api = require("./../api.js");
 var exports = module.exports = {
 	registerSocket: function (socket) {
 		socket.join("all");
-		//api.on(socket, api.GET_MAP, map.getMap);
-		api.emit(socket, api.WELCOME, {});
+		api.on(socket, api.GET_MAP, map.getMap);
+		api.emit(socket, api.WELCOME, {games: {}});
 	}
 }
 
