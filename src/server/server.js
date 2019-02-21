@@ -1,12 +1,16 @@
 var map = require("./map.js")
 var api = require("./../api.js");
+var server = {};
 
-var exports = module.exports = {
-	registerSocket: function (socket) {
-		socket.join("all");
-		api.on(socket, api.GET_MAP, map.getMap);
-		api.emit(socket, api.WELCOME, {games: {}});
-	}
+var exports = module.exports = function(users) {
+	server.users = users;
+	return server;
+}
+
+server.registerSocket =  function (socket) {
+	socket.join("all");
+	api.on(socket, api.GET_MAP, map.getMap);
+	api.emit(socket, api.WELCOME, {games: {}});
 }
 
 function loadMap() {
