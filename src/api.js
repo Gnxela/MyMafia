@@ -34,10 +34,10 @@ api.verifyData = function(apiCall, data) {
 
 api.emit = async function(socket, apiCall, data, callback) {
 	if (!socket || !socket.emit) {
-		throw "Socket not defined/incorrect.";
+		throw new Error("Socket not defined/incorrect.");
 	}
 	if (!apiCall) {
-		throw "apiCall not defined.";
+		throw new Error("apiCall not defined.");
 	}
 	let err = api.verifyData(apiCall, data);
 	if (err) {
@@ -64,13 +64,13 @@ api.emitSync = async function(socket, apiCall, data) {
 
 function _on(func, socket, apiCall, callback) {
 	if (!socket) {
-		throw "socket is not defined.";
+		throw new Error( "socket is not defined.");
 	}
 	if (!apiCall) {
-		throw "apiCall is not defined.";
+		throw new Error( "apiCall is not defined.");
 	}
 	if (!callback) {
-		throw "callback is not defined.";
+		throw new Error( "callback is not defined.");
 	}
 	let call = function(data, ackCallback) {
 		if (!_runMiddleware(socket, data)) {

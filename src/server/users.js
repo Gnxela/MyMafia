@@ -1,10 +1,23 @@
 var sha = require('sha2');
 
-var users = loadJSONFile(rootDir + "/data/users.json");
+var users = {users: loadJSONFile(rootDir + "/data/users.json"), online: {}};
+
+users.getUser(username) {
+	return online[username]
+}
+
+users.updateOnline = function(socket, username, session) {
+	if (users.online[username]) {
+		users.online[username].lastUpdate = new Date().getTime();
+	} else {
+		users.online[username] = {username: username, session: session, socket: socket, lastUpdate: new Date().getTime()};
+		console.log(username + " came online.");
+	}
+}
 
 users.isLoggedIn = function(username, session) {
-	for (let i = 0; i < users.length; i++) {
-		let user = users[i];
+	for (let i = 0; i < users.users.length; i++) {
+		let user = users.users[i];
 		if (user.username == username && user.session == session) {
 			return true;
 		}
@@ -13,27 +26,26 @@ users.isLoggedIn = function(username, session) {
 }
 
 users.register = function(username, password) {
-	for (let i = 0; i < users.length; i++) {
-		let user = users[i];
+	for (let i = 0; i < users.users.length; i++) {
+		let user = users.users[i];
 		if (user.username == username) {
 			return false;
 		}
 	}
 	let passwordHash = sha.sha224(password + passwordSalt).toString('hex');
-	users.push({username: username, password: passwordHash});
+	users.users.push({username: username, password: passwordHash});
 	writeJSONFile(rootDir + "/data/users.json")
 	return true;
 }
 
-users.login = function(username, password) {
+users.login = function(socket, username, password) {
 	let passwordHash = sha.sha224(password + passwordSalt).toString('hex');
-	for (let i = 0; i < users.length; i++) {
-		let user = users[i];
+	for (let i = 0; i < users.users.length; i++) {
+		let user = users.users[i];
 		if (user.username == username && user.password == passwordHash) {
-			let sessionID = sha.sha224(Math.random().toString()).toString('hex');
-			user.session = sessionID;
-			writeJSONFile(rootDir + "/data/users.json", users);
-			return sessionID;
+			user.session = generateUID();
+			writeJSONFile(rootDir + "/data/users.json", users.users);
+			return user.session;
 		}
 	}
 	return "";

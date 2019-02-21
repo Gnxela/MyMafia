@@ -1,5 +1,6 @@
 var map = require("./map.js")
 var api = require("./../api.js");
+var lobby = require("./lobby.js");
 var server = {};
 
 var exports = module.exports = function(users) {
@@ -8,9 +9,8 @@ var exports = module.exports = function(users) {
 }
 
 server.registerSocket =  function (socket) {
-	socket.join("all");
-	api.on(socket, api.GET_MAP, map.getMap);
-	api.emit(socket, api.WELCOME, {games: {}});
+	socket.join("lobby");
+	api.emit(socket, api.WELCOME, {games: lobby.games});
 }
 
 function loadMap() {

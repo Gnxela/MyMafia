@@ -3,6 +3,7 @@ var http = require('http').Server(app);
 var fs = require('fs');
 var path = require('path');
 var io = require('socket.io')(http);
+var sha = require('sha2');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 
@@ -35,6 +36,11 @@ api.use((socket, data) => {
 		socket.disconnect(true);
 		return false;
 	}
+	return true;
+});
+
+api.use((socket, data) => {
+	users.updateOnline(socket, data.username, data.session);
 	return true;
 });
 
@@ -114,6 +120,10 @@ app.get('/loadResource/:resource', function(req, res) {
 });
 
 function defineGlobals() {
+	globa.generateUID = function() {
+		return sha.sha224(Math.random().toString()).toString('hex');
+	}
+
 	global.writeJSONFile = function(file, object) {
 		return writeFile(file, JSON.stringify(object, null, 2))
 	}
