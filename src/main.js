@@ -3,7 +3,6 @@ var http = require('http').Server(app);
 var fs = require('fs');
 var path = require('path');
 var io = require('socket.io')(http);
-var sha = require('sha2');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 
@@ -17,12 +16,13 @@ app.use(cookieParser());
 
 global.rootDir = path.resolve(__dirname + "/..");
 global.passwordSalt = "gamesaltbvasd";
+defineGlobals();
 
-var users = loadJSONFile(rootDir + "/data/users.json");
+var users = require('./server/users.js');
 var server = require('./server/server.js')(users);
 var api = require('./api.js');
 api.use((socket, data) => {
-	if (!isLoggedIn(data.username, data.session)) {
+	if (!users.isLoggedIn(data.username, data.session)) {
 		api.emit(socket, api.DISCONNECT, {reason: "Invalid session."});
 		console.log("Disconnected " + data.session + " for invalid session.");
 		socket.disconnect(true);
@@ -45,7 +45,7 @@ io.on('connection', function(socket) {
 });
 
 app.get('/', function(req, res) {
-	if (isLoggedIn(req.cookies.username, req.cookies.session)) {
+	if (users.isLoggedIn(req.cookies.username, req.cookies.session)) {
 		res.send("<a href=\"/game\">Play</a> | <a href=\"/logout\">Logout</a>");
 	} else {
 		res.send("<a href=\"/login\">Login</a> | <a href=\"/register\">Register</a>");
@@ -53,7 +53,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/game', function(req, res) {
-	if (isLoggedIn(req.cookies.username, req.cookies.session)) {
+	if (users.isLoggedIn(req.cookies.username, req.cookies.session)) {
 		res.sendFile(rootDir + "/data/pages/game.html");
 	} else {
 		res.redirect("/");
@@ -66,18 +66,12 @@ app.get('/login', function(req, res) {
 
 app.post('/login', function(req, res) {
 	if (req.body.username != "" && req.body.password != "") {
-		let passwordHash = sha.sha224(req.body.password + passwordSalt).toString('hex');
-		for (let i = 0; i < users.length; i++) {
-			let user = users[i];
-			if (user.username == req.body.username && user.password == passwordHash) {
-				let sessionID = sha.sha224(Math.random().toString()).toString('hex');
-				user.session = sessionID;
-				writeJSONFile(rootDir + "/data/users.json", users);
-				res.redirect("/loginSuccess?username=" + user.username + "&session=" + sessionID);
-				return;
-			}
+		let session = users.login(req.body.username, req.body.password);
+		if (session) {
+			res.redirect("/loginSuccess?username=" + req.body.username + "&session=" + session);
+		} else {
+			res.send("Username or password incorrect.");
 		}
-		res.send("Username or password incorrect.");
 	} else {
 		res.send("Invalid input.");
 	}
@@ -89,17 +83,11 @@ app.get('/register', function(req, res) {
 
 app.post('/register', function(req, res) {
 	if (req.body.username != "" && req.body.password != "") {
-		for (let i = 0; i < users.length; i++) {
-			let user = users[i];
-			if (user.username == req.body.username) {
-				res.send("Username already registered. Pick another username.");
-				return;
-			}
+		if (users.register(req.body.username, req.body.password)) {
+			res.send("Successfully registered.<br><a href=\"/login\">Login.</a>");
+		} else {
+			res.send("Username already registered. Pick another username.");
 		}
-		let passwordHash = sha.sha224(req.body.password + passwordSalt).toString('hex');
-		users.push({username: req.body.username, password: passwordHash});
-		writeJSONFile(rootDir + "/data/users.json")
-		res.send("Successfully registered.<br><a href=\"/login\">Login.</a>");
 	} else {
 		res.send("Invalid input.");
 	}
@@ -125,30 +113,22 @@ app.get('/loadResource/:resource', function(req, res) {
 	}
 });
 
-function writeJSONFile(file, object) {
-	return writeFile(file, JSON.stringify(object, null, 2))
-}
-
-function writeFile(file, text) {
-	fs.writeFileSync(file, text);
-}
-
-function loadJSONFile(file) {
-	return JSON.parse(loadFile(file))
-}
-
-function loadFile(file) {
-	return fs.readFileSync(file);
-}
-
-function isLoggedIn(username, session) {
-	for (let i = 0; i < users.length; i++) {
-		let user = users[i];
-		if (user.username == username && user.session == session) {
-			return true;
-		}
+function defineGlobals() {
+	global.writeJSONFile = function(file, object) {
+		return writeFile(file, JSON.stringify(object, null, 2))
 	}
-	return false;
+
+	global.writeFile = function(file, text) {
+		fs.writeFileSync(file, text);
+	}
+
+	global.loadJSONFile = function(file) {
+		return JSON.parse(loadFile(file))
+	}
+
+	global.loadFile = function(file) {
+		return fs.readFileSync(file);
+	}
 }
 
 http.listen(9999, function() {
