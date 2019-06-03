@@ -2,9 +2,12 @@ var map = require("./map.js")
 var api = require("./../api.js");
 var users = require("./users.js");
 var lobby = require("./lobby.js");
-var server = {};
+var server = {io: null};
 
-var exports = module.exports = server;
+var exports = module.exports = function(io) {
+	server.io = io;
+	return server;
+};
 
 api.use((socket, data) => {
 	if (!users.isLoggedIn(data.username, data.session)) {

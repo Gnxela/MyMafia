@@ -9,8 +9,7 @@ global.rootDir = path.resolve(__dirname + "/..");
 global.passwordSalt = "gamesaltbvasd";
 defineGlobals();
 
-var users = require('./server/users.js');
-var server = require('./server/server.js');
+var server = require('./server/server.js')(io);
 var api = require('./api.js');
 var httpHandler = require('./httpHandler.js')(http, app);
 
@@ -19,8 +18,6 @@ io.on('connection', function(socket) {
 		server.registerSocket(socket);
 	});
 });
-
-
 
 function defineGlobals() {
 	global.generateUID = function() {
