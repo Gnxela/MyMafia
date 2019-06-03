@@ -7,13 +7,8 @@ var TILE_WIDTH = 10;
 var CHUNK_WIDTH = 30;
 
 async function init() {
+	window.onkeypress = handleKeys;
 	await loadMap();
-	canvas = document.getElementById("canvas");
-	canvas.addEventListener("mousedown", mouseDown);
-	canvas.addEventListener("mousemove", mouseMove);
-	canvas.addEventListener("mouseup", mouseUp);
-	canvas.addEventListener("mouseout", mouseUp);
-	setInterval(render, 10);
 }
 
 async function render() {
@@ -57,6 +52,11 @@ function pointToTile(x, y) {
 	return map.getTile(Math.floor(x / TILE_WIDTH), Math.floor(y / TILE_WIDTH));
 }
 
+function handleKeys(e) {
+	console.log(e);
+}
+
+/*
 function mouseDown() {
 	mouse.down = true;
 }
@@ -75,6 +75,7 @@ function mouseMove(e) {
 function mouseUp() {
 	mouse.down = false;
 }
+*/
 
 map.getTile = function(x, y) {
 	if (map.tiles[x] && map.tiles[x][y]) {

@@ -1,2 +1,4 @@
+Change game to Mafia
+Server/Server.js shouldn't take users from main.js
+Socket.io and Express should be seperated better. Main.js is confusing as to what it is doing.
 Create a lobby system for creating and joining games.
-Map generation.

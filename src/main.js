@@ -120,7 +120,7 @@ app.get('/loadResource/:resource', function(req, res) {
 });
 
 function defineGlobals() {
-	globa.generateUID = function() {
+	global.generateUID = function() {
 		return sha.sha224(Math.random().toString()).toString('hex');
 	}
 
@@ -133,7 +133,11 @@ function defineGlobals() {
 	}
 
 	global.loadJSONFile = function(file) {
-		return JSON.parse(loadFile(file))
+		let text = loadFile(file);
+		if (text == "" || text == "\n") {
+			return undefined;
+		}
+		return JSON.parse(text);
 	}
 
 	global.loadFile = function(file) {

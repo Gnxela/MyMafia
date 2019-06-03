@@ -1,7 +1,7 @@
 {
-	"name": "KingdomGame",
+	"name": "MyMafia",
 	"version": "0.0.1",
-	"description": "Random game.",
+	"description": "A web based mafia game for playing mafia with friends locally!",
 	"dependencies": {
 		"body-parser": "^1.18.3",
 		"cookie-parser": "^1.4.4",

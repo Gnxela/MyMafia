@@ -1,8 +1,8 @@
 var api = {
 	HANDSHAKE: {action: "HANDSHAKE", data: {}},
-	WELCOME: {action: "WELCOME", data: {games: {}}},
+	WELCOME: {action: "WELCOME", data: {}},
 	DISCONNECT: {action: "DISCONNECT", data: {reason: ""}},
-	GET_GAMES: {action: "GET_GAMES", data: {}},
+	GET_GAMES: {action: "GET_GAMES", data: {games: {}}},
 	CREATE_GAME: {action: "CREATE_GAME", data: {maxPlayers: 1, password: ""}},
 	JOIN_GAME: {action: "JOIN_GAME", data: {gameID: "", password: ""}},
 	GET_MAP: {action: "GET_MAP", data: {}}
@@ -10,17 +10,17 @@ var api = {
 
 api.user = {username: "", session: ""};
 
-api._middleware = [];
+api.middleware = [];
 
 api.use = function(func) {
-	api._middleware.push(func);
+	api.middleware.push(func);
 }
 
 api.once = function(socket, apiCall, callback) {
-	_on(false, socket, apiCall, callback);
+	on(false, socket, apiCall, callback);
 }
 api.on = function(socket, apiCall, callback) {
-	_on(true, socket, apiCall, callback);
+	on(true, socket, apiCall, callback);
 }
 
 api.verifyData = function(apiCall, data) {
@@ -62,7 +62,7 @@ api.emitSync = async function(socket, apiCall, data) {
 	return xyz;
 }
 
-function _on(func, socket, apiCall, callback) {
+function on(func, socket, apiCall, callback) {
 	if (!socket) {
 		throw new Error( "socket is not defined.");
 	}
@@ -86,9 +86,9 @@ function _on(func, socket, apiCall, callback) {
 	}
 }
 
-function _runMiddleware(socket, data) {
+function runMiddleware(socket, data) {
 	for (let i = 0; i < api._middleware.length; i++) {
-		if (!api._middleware[i] || !api._middleware[i](socket, data)) {
+		if (!api.middleware[i] || !api.middleware[i](socket, data)) {
 			return false;
 		}
 	}

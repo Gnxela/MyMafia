@@ -1,15 +1,7 @@
 var sha = require('sha2');
 
-var users = {users: [], online: {}};
+var users = {users: loadJSONFile(rootDir + "/data/users.json"), online: {}};
 var timeout = 10 * 1000;
-
-function init() {
-	let u = loadJSONFile(rootDir + "/data/users.json");
-	if (u) {
-		users.users = u;
-	}
-}
-init();
 
 users.getUser = function(username) {
 	return online[username]
@@ -21,7 +13,7 @@ users.updateOnline = function(socket, username, session) {
 		user.lastUpdate = new Date().getTime();
 		clearTimeout(users.timeoutID);
 		user.timeoutID = setTimeout(() => {
-			user.disconnect();//Create a user class that handles all this stuff.
+			user.discconnect();//Create a user class that handles all this stuff.
 		}, timeout);
 	} else {
 		users.online[username] = {username: username, session: session, socket: socket, lastUpdate: new Date().getTime()};
@@ -52,10 +44,13 @@ users.register = function(username, password) {
 	return true;
 }
 
-users.login = function(username, password) {
+users.login = function(socket, username, password) {
+	let passwordHash = sha.sha224(password + passwordSalt).toString('hex');
 	let passwordHash = sha.sha224(password + passwordSalt).toString('hex');
 	for (let i = 0; i < users.users.length; i++) {
 		let user = users.users[i];
+		console.log(user);
+		console.log(passwordHash);
 		if (user.username == username && user.password == passwordHash) {
 			user.session = generateUID();
 			writeJSONFile(rootDir + "/data/users.json", users.users);
