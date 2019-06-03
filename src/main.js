@@ -9,9 +9,11 @@ global.rootDir = path.resolve(__dirname + "/..");
 global.passwordSalt = "gamesaltbvasd";
 defineGlobals();
 
-var server = require('./server/server.js')(io);
+var Server = require('./server/server.js');
 var api = require('./api.js');
 var httpHandler = require('./httpHandler.js')(http, app);
+
+var server = new Server(io);
 
 io.on('connection', function(socket) {
 	api.once(socket, api.HANDSHAKE, function(data) {

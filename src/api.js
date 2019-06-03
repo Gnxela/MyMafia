@@ -5,7 +5,6 @@ var api = {
 	GET_GAMES: {action: "GET_GAMES", data: {games: {}}},
 	CREATE_GAME: {action: "CREATE_GAME", data: {maxPlayers: 1, password: ""}},
 	JOIN_GAME: {action: "JOIN_GAME", data: {gameID: "", password: ""}},
-	GET_MAP: {action: "GET_MAP", data: {}}
 };
 
 api.user = {username: "", session: ""};
@@ -73,8 +72,8 @@ function on(func, socket, apiCall, callback) {
 		throw new Error( "callback is not defined.");
 	}
 	let call = function(data, ackCallback) {
-		if (!_runMiddleware(socket, data)) {
-			console.log("Failed packet: " + apiCall.action + ":" + data);
+		if (!runMiddleware(socket, data)) {
+			console.log("Failed packet: " + apiCall.action + ":" + JSON.stringify(data));
 			return;
 		}
 		callback(data.data, ackCallback);
@@ -87,7 +86,7 @@ function on(func, socket, apiCall, callback) {
 }
 
 function runMiddleware(socket, data) {
-	for (let i = 0; i < api._middleware.length; i++) {
+	for (let i = 0; i < api.middleware.length; i++) {
 		if (!api.middleware[i] || !api.middleware[i](socket, data)) {
 			return false;
 		}

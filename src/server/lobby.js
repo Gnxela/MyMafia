@@ -1,10 +1,12 @@
-var users = require('./users.js');
+var Game = require("./game.js")
 
-var lobby = {games: []};
+function Lobby() {
+	this.games = [];
 
-lobby.createGame = function(data, callback) {
-	games.push({started: false, password: data.password, maxPlayers: data.maxPlayers, players: []});
-	callback(true);
+	this.createGame = function(maxPlayers, password) {
+		this.games.push(new Game(maxPlayers, password));
+	}
 }
 
-exports = module.exports = lobby;
+
+exports = module.exports = Lobby;
