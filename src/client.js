@@ -1,5 +1,21 @@
 var socket = io();
 
+async function createGame(maxPlayers, password) {
+	let data = await api.emit(socket, api.CREATE_GAME, {maxPlayers, password});
+	if (!data.ok) {
+		error("Failed to create game: " + data.err);
+		return false;
+	}
+	log("", data);
+	return true;
+}
+
+async function getGames() {
+	let games = await api.emit(socket, api.GET_GAMES, {});
+	log(games);
+	return games;
+}
+
 function init(games) {
 	console.log(games);
 }
@@ -30,6 +46,22 @@ function handshake() {
 		init(data.games);
 	});
 	api.emit(socket, api.HANDSHAKE, {});
+}
+
+function log(str, obj) {
+	if (obj) {
+		console.log(str + JSON.stringify(obj));
+	} else {
+		console.log(str);
+	}
+}
+
+function error(str, obj) {
+	if (obj) {
+		console.err(str + JSON.stringify(obj));
+	} else {
+		console.err(str);
+	}
 }
 
 preload();

@@ -4,11 +4,15 @@ var api = require("../api.js");
 var Lobby = require("./lobby.js");
 
 function Server(io) {
-	var io = io;
-	var lobby = new Lobby();
+	var lobby = new Lobby(io);
 
 	this.init = function() {
 		addMiddleware();
+	}
+
+	this.registerSocket =  function (socket) {
+		socket.join("lobby");
+		api.emit(socket, api.WELCOME, {games: lobby.games});
 	}
 
 	var addMiddleware = function() {
@@ -33,11 +37,6 @@ function Server(io) {
 			users.updateOnline(socket, data.username, data.session);
 			return true;
 		});
-	}
-
-	this.registerSocket =  function (socket) {
-		socket.join("lobby");
-		api.emit(socket, api.WELCOME, {games: lobby.games});
 	}
 
 	this.init();

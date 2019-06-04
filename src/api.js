@@ -61,6 +61,14 @@ api.emitSync = async function(socket, apiCall, data) {
 	return xyz;
 }
 
+api.fail = function(err) {
+	return {ok: false, err: err};
+}
+
+api.succ = function() {
+	return {ok: true, err: null};
+}
+
 function on(func, socket, apiCall, callback) {
 	if (!socket) {
 		throw new Error( "socket is not defined.");
