@@ -1,6 +1,2 @@
-Fix user timeout
-Create a user class
-HTTP should include it's own dependancies.
 HTTP should send all files in client/
-Create consistant objects for lobbies, server etc.
 Create a lobby system for creating and joining games.
