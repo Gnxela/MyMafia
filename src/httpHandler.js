@@ -24,10 +24,8 @@ httpHandler.init = function() {
 	//Allow cookie parsing.
 	app.use(cookieParser());
 
-	var users = require('./server/users.js');
-
 	app.get('/', function(req, res) {
-		if (users.isLoggedIn(req.cookies.username, req.cookies.session)) {
+		if (server.isLoggedIn(req.cookies.username, req.cookies.session)) {
 			res.send("<a href=\"/game\">Play</a> | <a href=\"/logout\">Logout</a>");
 		} else {
 			res.send("<a href=\"/login\">Login</a> | <a href=\"/register\">Register</a>");
@@ -35,7 +33,7 @@ httpHandler.init = function() {
 	});
 
 	app.get('/game', function(req, res) {
-		if (users.isLoggedIn(req.cookies.username, req.cookies.session)) {
+		if (server.isLoggedIn(req.cookies.username, req.cookies.session)) {
 			res.sendFile(rootDir + "/data/pages/game.html");
 		} else {
 			res.redirect("/");
@@ -48,7 +46,7 @@ httpHandler.init = function() {
 
 	app.post('/login', function(req, res) {
 		if (req.body.username != "" && req.body.password != "") {
-			let session = users.login(req.body.username, req.body.password);
+			let session = server.login(req.body.username, req.body.password);
 			if (session) {
 				res.redirect("/loginSuccess?username=" + req.body.username + "&session=" + session);
 			} else {
@@ -65,7 +63,7 @@ httpHandler.init = function() {
 
 	app.post('/register', function(req, res) {
 		if (req.body.username != "" && req.body.password != "") {
-			if (users.register(req.body.username, req.body.password)) {
+			if (server.register(req.body.username, req.body.password)) {
 				res.send("Successfully registered.<br><a href=\"/login\">Login.</a>");
 			} else {
 				res.send("Username already registered. Pick another username.");

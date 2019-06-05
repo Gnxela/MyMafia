@@ -12,7 +12,7 @@ defineGlobals();
 var Server = require('./server/server.js');
 var httpHandler = require('./httpHandler.js')(http, app);
 
-var server = new Server(io);
+global.server = new Server(io);
 
 function defineGlobals() {
 	global.generateUID = function() {
