@@ -1,16 +1,17 @@
+var app = require('express')();
+var http = require('http').Server(app);
 var fs = require('fs');
 var path = require('path');
-var io = require('socket.io')(http);
 var sha = require('sha2');
 
 global.rootDir = path.resolve(__dirname + "/..");
 global.passwordSalt = "gamesaltbvasd";
 defineGlobals();
 
-var Server = require('./server/server.js');
-var httpHandler = require('./httpHandler.js')(http, app);
+var httpHandler = new require('./httpHandler.js')(app, http);
 
-global.server = new Server(io);
+var Server = require('./server/server.js');
+global.server = new Server(http);
 
 function defineGlobals() {
 	global.generateUID = function() {

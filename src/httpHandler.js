@@ -1,11 +1,10 @@
+var fs = require('fs');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 
 var httpHandler = {};
 
-function HTTPHandler() {
-	var app = require('express')();
-	var http = require('http').Server(app);
+function HTTPHandler(app, http) {
 
 		//Allow post parameters in Express 4.15.
 	app.use(bodyParser.json());
@@ -76,7 +75,11 @@ function HTTPHandler() {
 		let resource = req.params.resource;
 		switch (resource) {
 		case "game.js":
-			res.send(loadFile(rootDir + "/src/client/api.js") + loadFile(rootDir + "/src/client/client.js"));
+			let bundledScript = "";
+			fs.readdirSync(rootDir + "/src/client/").forEach(file => {
+				bundledScript += loadFile(rootDir + "/src/client/"  + file);
+			});
+			res.send(bundledScript);
 			break;
 		default:
 			res.send("INVALID RESOURCE.");

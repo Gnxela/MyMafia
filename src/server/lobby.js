@@ -1,6 +1,6 @@
 var Game = require("./game.js")
 
-function Lobby(io, api) {
+function Lobby(api) {
 	this.games = [];
 
 	this.registerSocket = function(socket) {

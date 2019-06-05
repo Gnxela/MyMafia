@@ -1,2 +1,1 @@
-HTTP should send all files in client/
 Create a lobby system for creating and joining games.

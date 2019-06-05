@@ -4,9 +4,11 @@ var Lobby = require("./lobby.js");
 var User = require("./user.js");
 var API = require("./api.js");
 
-function Server(io) {
+function Server(http) {
+	var io = require('socket.io')(http);
+
 	var api = new API();
-	var lobby = new Lobby(io, api);
+	var lobby = new Lobby(api);
 	var users = {};//Username -> User
 
 	io.on('connection', (socket) => {
