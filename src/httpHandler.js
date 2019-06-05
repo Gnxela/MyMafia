@@ -87,7 +87,7 @@ httpHandler.init = function() {
 		let resource = req.params.resource;
 		switch (resource) {
 		case "game.js":
-			res.send(loadFile(rootDir + "/src/api.js") + loadFile(rootDir + "/src/client.js"));
+			res.send(loadFile(rootDir + "/src/client/api.js") + loadFile(rootDir + "/src/client/client.js"));
 			break;
 		default:
 			res.send("INVALID RESOURCE.");

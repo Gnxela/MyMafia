@@ -10,16 +10,9 @@ global.passwordSalt = "gamesaltbvasd";
 defineGlobals();
 
 var Server = require('./server/server.js');
-var api = require('./api.js');
 var httpHandler = require('./httpHandler.js')(http, app);
 
 var server = new Server(io);
-
-io.on('connection', function(socket) {
-	api.once(socket, api.HANDSHAKE, function(data) {
-		server.registerSocket(socket);
-	});
-});
 
 function defineGlobals() {
 	global.generateUID = function() {

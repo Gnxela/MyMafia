@@ -1,32 +1,32 @@
 var users = require("./users.js");
-var api = require("../api.js");
 
 var Lobby = require("./lobby.js");
+var API = require("./api.js");
 
 function Server(io) {
-	var lobby = new Lobby(io);
+	var api = new API();
+	var lobby = new Lobby(io, api);
+
+	io.on('connection', (socket) => {
+		api.once(socket, api.calls.HANDSHAKE, () => {
+			this.registerSocket(socket);
+			lobby.registerSocket(socket);
+		});
+	});
 
 	this.init = function() {
 		addMiddleware();
 	}
 
 	this.registerSocket =  function (socket) {
-		socket.join("lobby");
-		api.emit(socket, api.WELCOME, {games: lobby.games});
+		api.emit(socket, api.calls.WELCOME, {games: lobby.games});
 	}
 
 	var addMiddleware = function() {
 		api.use((socket, data) => {
 			if (!users.isLoggedIn(data.username, data.session)) {
-				api.emit(socket, api.DISCONNECT, {reason: "Invalid session."});
+				api.emit(socket, api.calls.DISCONNECT, {reason: "Invalid session."});
 				console.log("Disconnected " + data.session + " for invalid session.");
-				socket.disconnect(true);
-				return false;
-			}
-			let err = api.verifyData(api[data.action], data)
-			if (err) {
-				api.emit(socket, api.DISCONNECT, {reason: "Invalid data."});
-				console.log("Disconnected " + data.session + " for invalid data.");
 				socket.disconnect(true);
 				return false;
 			}
