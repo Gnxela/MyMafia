@@ -10,7 +10,7 @@ function API() {
 		DISCONNECT: {action: "DISCONNECT", data: {reason: ""}},
 		GET_GAMES: {action: "GET_GAMES", data: {}},
 		CREATE_GAME: {action: "CREATE_GAME", data: {maxPlayers: 1, password: ""}},
-		JOIN_GAME: {action: "JOIN_GAME", data: {gameID: "", password: ""}},
+		JOIN_GAME: {action: "JOIN_GAME", data: {id: "", password: ""}},
 	};
 
 	this.use = function(func) {
@@ -23,6 +23,10 @@ function API() {
 
 	this.on = function(socket, apiCall, callback) {
 		on(true, socket, apiCall, callback);
+	}
+
+	this.off = function(socket, apiCall) {
+		socket.removeAllListeners(apiCall.action);
 	}
 
 	this.emit = function(socket, apiCall, data, callback) {
@@ -92,7 +96,7 @@ function API() {
 				console.log("Failed packet: " + apiCall.action + ":" + JSON.stringify(data));
 				return;
 			}
-			callback(data.data, ackCallback);
+			callback(server.getUser(data.username), data.data, ackCallback);
 		}
 		if (func) {
 			socket.on(apiCall.action, call);

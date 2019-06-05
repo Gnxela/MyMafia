@@ -1,9 +1,22 @@
 var socket;
 var api;
+var username;
+
+async function joinGame(id, password) {
+	if (!password) {
+		password = "";
+	}
+	let data = await api.emitSync(socket, api.calls.JOIN_GAME, {id: id, password: password});
+	if (!data.ok) {
+		error("Failed to create game: " + data.err);
+		return false;
+	}
+	openPage("game");
+}
 
 async function createGame() {
 	let data = await api.emitSync(socket, api.calls.CREATE_GAME, {maxPlayers: 3, password: "test"});
-	if (!data.ok) {
+	if (data.ok === false) {
 		error("Failed to create game: " + data.err);
 		return false;
 	}
@@ -12,14 +25,21 @@ async function createGame() {
 }
 
 async function getGames() {
-	let games = await api.emitSync(socket, api.calls.GET_GAMES, {});
-	log(games);
-	return games;
+	return await api.emitSync(socket, api.calls.GET_GAMES, {});
 }
 
-function init() {
-	document.getElementById("getGames").addEventListener("click", () => getGames());
-	document.getElementById("createGame").addEventListener("click", () => createGame(3, "test"));
+function init(games) {
+	console.log(games);
+	for (let i = 0; i < games.length; i++) {
+		let game = games[i];
+		for (let j = 0; j < game.users.length; j++) {
+			if (game.users[j].username == username) {
+				openPage('game')
+				return;
+			}
+		}
+	}
+	openPage("lobby");
 }
 
 function preload() {
@@ -28,7 +48,6 @@ function preload() {
 }
 
 function setupSocket() {
-	let username = "";
 	let session = "";
 	let cookies = document.cookie.split("; ");
 	for (let i = 0; i < cookies.length; i++) {
@@ -48,7 +67,7 @@ function setupSocket() {
 
 function handshake() {
 	api.once(socket, api.calls.WELCOME, (data) => {
-		init();
+		init(data.games);
 	});
 	api.emit(socket, api.calls.HANDSHAKE, {});
 }
@@ -63,13 +82,14 @@ function log(str, obj) {
 
 function error(str, obj) {
 	if (obj) {
-		console.err(str + JSON.stringify(obj));
+		console.error(str + JSON.stringify(obj));
 	} else {
-		console.err(str);
+		console.error(str);
 	}
 }
 
 window.onload = function() {
 	socket = io();
 	preload();
+	container = document.getElementById("container"); //ui.js
 }

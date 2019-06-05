@@ -12,9 +12,8 @@ function Server(http) {
 	var users = {};//Username -> User
 
 	io.on('connection', (socket) => {
-		api.once(socket, api.calls.HANDSHAKE, () => {
-			this.registerSocket(socket);
-			lobby.registerSocket(socket);
+		api.once(socket, api.calls.HANDSHAKE, (user) => {
+			this.registerSocket(user, socket);
 		});
 	});
 
@@ -24,12 +23,17 @@ function Server(http) {
 		addMiddleware();
 	}
 
-	this.registerSocket =  function (socket) {
+	this.getUser = function(username) {
+		return users[username];
+	}
+
+	this.registerSocket =  function (user, socket) {
+		lobby.registerSocket(user, socket);
 		api.emit(socket, api.calls.WELCOME, {games: lobby.games});
 	}
 
 	this.register = function(username, password) {
-		if (users[username]) {
+		if (this.getUser(username)) {
 			return false;
 		}
 		let passwordHash = sha.sha224(password + passwordSalt).toString('hex');
@@ -40,7 +44,7 @@ function Server(http) {
 
 	this.login = function(username, password) {
 		let passwordHash = sha.sha224(password + passwordSalt).toString('hex');
-		let user = users[username];
+		let user = this.getUser(username);
 		if (user.username == username && user.getPassword() == passwordHash) {
 			user.setSession(generateUID())
 			this.saveUsers();
@@ -50,8 +54,8 @@ function Server(http) {
 	}
 
 	this.isLoggedIn = function(username, session) {
-		if (users[username]) {
-			return users[username].isLoggedIn(session);
+		if (this.getUser(username)) {
+			return this.getUser(username).isLoggedIn(session);
 		}
 		return false;
 	}
@@ -91,7 +95,7 @@ function Server(http) {
 	this.saveUsers = function() {
 		let usersArray = [];
 		for (let username in users) {
-			usersArray.push(users[username].transform());
+			usersArray.push(this.getUser(username).transform());
 		}
 		writeJSONFile(global.rootDir + "/data/users.json", usersArray);
 	}
