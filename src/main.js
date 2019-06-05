@@ -1,5 +1,3 @@
-var app = require('express')();
-var http = require('http').Server(app);
 var fs = require('fs');
 var path = require('path');
 var io = require('socket.io')(http);

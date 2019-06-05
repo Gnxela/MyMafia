@@ -1,13 +1,25 @@
+var app = require('express')();
+var
+
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 
-var httpHandler = {};
+var httpHandler = {http: null, app: null};
 
-function HTTPHandler() {
-	var app = require('express')();
-	var http = require('http').Server(app);
+var exports = module.exports = function(http, app) {
+	if (!httpHandler.http) {
+		httpHandler.http = http;
+		httpHandler.app = app;
+		httpHandler.init();
+	}
+	return httpHandler;
+}
 
-		//Allow post parameters in Express 4.15.
+httpHandler.init = function() {
+	let http = httpHandler.http;
+	let app = httpHandler.app;
+
+	//Allow post parameters in Express 4.15.
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({
 		extended: true
@@ -24,7 +36,7 @@ function HTTPHandler() {
 	});
 
 	app.get('/game', function(req, res) {
-			if (server.isLoggedIn(req.cookies.username, req.cookies.session)) {
+		if (server.isLoggedIn(req.cookies.username, req.cookies.session)) {
 			res.sendFile(rootDir + "/data/pages/game.html");
 		} else {
 			res.redirect("/");
@@ -88,5 +100,3 @@ function HTTPHandler() {
 		console.log("Listening on port 9999");
 	});
 }
-
-var exports = module.exports = HTTPHandler;

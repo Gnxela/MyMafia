@@ -1,3 +1,5 @@
+var sha = require("sha2");
+
 var Lobby = require("./lobby.js");
 var User = require("./user.js");
 var API = require("./api.js");
@@ -16,6 +18,7 @@ function Server(io) {
 
 	this.init = function() {
 		loadUsers();
+		this.saveUsers();
 		addMiddleware();
 	}
 
@@ -29,7 +32,7 @@ function Server(io) {
 		}
 		let passwordHash = sha.sha224(password + passwordSalt).toString('hex');
 		users[username] = new User(username, password, generateUID());
-		writeUsers();
+		this.saveUsers();
 		return true;
 	}
 
@@ -38,7 +41,7 @@ function Server(io) {
 		let user = users[username];
 		if (user.username == username && user.getPassword() == passwordHash) {
 			user.setSession(generateUID())
-			writeUsers();
+			this.saveUsers();
 			return user.getSession();;
 		}
 		return "";
@@ -79,12 +82,11 @@ function Server(io) {
 		let usersFile = loadJSONFile(global.rootDir + "/data/users.json");
 		for (let index = 0; index < usersFile.length; index++) {
 			let user = usersFile[index];
-			users[user.username] = new User(user.username, user.password, user.session);
+			users[user.username] = new User(user.username, user.password, user.session, user.lastSeen);
 		}
 	}
 
-	// Transforms User class mantually. Can't just write the object because of the private variables.
-	global.writeUsers = function() {
+	this.saveUsers = function() {
 		let usersArray = [];
 		for (let username in users) {
 			usersArray.push(users[username].transform());

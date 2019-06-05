@@ -2,15 +2,26 @@ var sha = require('sha2');
 
 const TIMEOUT = 10 * 1000;
 
-function User(username, _password, _session) {
+function User(username, _password, _session, lastSeen) {
 	var session = _session;
 	var password = _password;
+	var timeoutId = 0;
 
 	this.username = username;
-	this.lastSeen;
+	this.lastSeen = lastSeen;
 
 	this.updateLastSeen = function() {
-		this.lastSeen = new Date().getTime();
+		let timeNow = new Date().getTime();
+		if (timeNow - this.lastSeen > TIMEOUT) {
+			console.log(username + " came online.")
+		}
+		if (timeoutId) {
+			clearTimeout(timeoutId);
+		}
+		timeoutId = setTimeout(() => {
+			console.log(username + " went offline.")
+		}, TIMEOUT)
+		this.lastSeen = timeNow
 	}
 
 	this.isLoggedIn = function(_session) {
@@ -31,7 +42,7 @@ function User(username, _password, _session) {
 	}
 
 	this.transform = function() {
-		return {username: this.username, password: password, session: session};
+		return {username: this.username, password: password, session: session, lastSeen: this.lastSeen};
 	}
 
 	this.getPassword = function() {
