@@ -74,6 +74,9 @@ function HTTPHandler(app, http) {
 	app.get('/loadResource/:resource', function(req, res) {
 		let resource = req.params.resource;
 		switch (resource) {
+		case "game.css":
+			res.sendFile(rootDir + "/data/pages/game.css");
+			break;
 		case "game.js":
 			let bundledScript = "";
 			fs.readdirSync(rootDir + "/src/client/").forEach(file => {

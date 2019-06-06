@@ -2,7 +2,13 @@
   {
     "username": "Alex",
     "password": "5ef38739bef3c51b6bfb0be0fae603516625f4a8d5172d3cf758e401",
-    "session": "cebcc0e0e69d27d0c6a6d236144311f1ece98f9588d4ff32eb475ebc",
-    "lastSeen": 1559769581278
+    "session": "a185b69024212ba5f16daa6bec6fd1414d819c5008f1b5fe615e03f9",
+    "lastSeen": 1559836577934
+  },
+  {
+    "username": "Test",
+    "password": "5ef38739bef3c51b6bfb0be0fae603516625f4a8d5172d3cf758e401",
+    "session": "ad76161944b9a3c372444489b6bb76724314f74e890f0b98d90bf0b9",
+    "lastSeen": 1559836590864
   }
 ]

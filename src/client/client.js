@@ -29,7 +29,10 @@ async function getGames() {
 }
 
 function init(games) {
-	console.log(games);
+	setInterval(() => {
+		api.emit(socket, api.calls.HEARTBEAT, {});
+	}, 1000);
+	//If we're in a game open the page.
 	for (let i = 0; i < games.length; i++) {
 		let game = games[i];
 		for (let j = 0; j < game.users.length; j++) {

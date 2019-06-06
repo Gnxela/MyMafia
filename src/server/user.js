@@ -1,6 +1,6 @@
 var sha = require('sha2');
 
-const TIMEOUT = 10 * 1000;
+const TIMEOUT = 3 * 1000;
 
 function User(username, _password, _session, lastSeen) {
 	var session = _session;
@@ -9,6 +9,9 @@ function User(username, _password, _session, lastSeen) {
 
 	this.username = username;
 	this.lastSeen = lastSeen;
+	if (!lastSeen) {
+		this.lastSeen = 0;
+	}
 
 	this.updateLastSeen = function() {
 		let timeNow = new Date().getTime();

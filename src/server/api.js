@@ -5,6 +5,7 @@ function API() {
 	 * API calls. Data is the data the server expects to receive from the client.
 	 */
 	this.calls = {
+		HEARTBEAT: {action: "HEARTBEAT", data: {}},
 		HANDSHAKE: {action: "HANDSHAKE", data: {}},
 		WELCOME: {action: "WELCOME", data: {}},
 		DISCONNECT: {action: "DISCONNECT", data: {reason: ""}},

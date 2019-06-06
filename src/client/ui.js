@@ -30,9 +30,12 @@ function openLoby() {
 			let gameDiv = createDiv("", "game");
 			let hasPassword = createDiv("", (game.hasPassword ? "has" : "no") + "-password password");
 			gameDiv.appendChild(hasPassword);
-			let players = createDiv("", "players");
-			players.innerHTML = game.maxPlayers;
+			let players = createDiv("", "num-players");
+			players.innerHTML = game.users.length;
 			gameDiv.appendChild(players);
+			let maxPlayers = createDiv("", "max-players");
+			maxPlayers.innerHTML = game.maxPlayers;
+			gameDiv.appendChild(maxPlayers);
 			let joinGamee = createButton("Join", "", "join");
 			joinGamee.addEventListener('click', () => joinGame(game.id));
 			gameDiv.appendChild(joinGamee);

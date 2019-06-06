@@ -2,6 +2,7 @@ function API(username, session) {
 	var middleware = [];
 
 	this.calls = { //API calls RECEIVED by the client.
+		HEARTBEAT: {action: "HEARTBEAT", data: {}},
 		HANDSHAKE: {action: "HANDSHAKE", data: {}},
 		WELCOME: {action: "WELCOME", data: {games: []}},
 		DISCONNECT: {action: "DISCONNECT", data: {reason: ""}},

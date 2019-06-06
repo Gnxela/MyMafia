@@ -28,6 +28,7 @@ function Server(http) {
 	}
 
 	this.registerSocket =  function (user, socket) {
+		api.on(socket, api.calls.HEARTBEAT, () => {});
 		lobby.registerSocket(user, socket);
 		api.emit(socket, api.calls.WELCOME, {games: lobby.games});
 	}
@@ -37,7 +38,7 @@ function Server(http) {
 			return false;
 		}
 		let passwordHash = sha.sha224(password + passwordSalt).toString('hex');
-		users[username] = new User(username, password, generateUID());
+		users[username] = new User(username, passwordHash, generateUID());
 		this.saveUsers();
 		return true;
 	}
@@ -45,6 +46,9 @@ function Server(http) {
 	this.login = function(username, password) {
 		let passwordHash = sha.sha224(password + passwordSalt).toString('hex');
 		let user = this.getUser(username);
+		if (!user) {
+			return "";
+		}
 		if (user.username == username && user.getPassword() == passwordHash) {
 			user.setSession(generateUID())
 			this.saveUsers();
