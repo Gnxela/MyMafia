@@ -14,7 +14,7 @@ function Lobby(api) {
 		});
 
 		api.on(socket, api.calls.CREATE_GAME, (user, data, ack) => {
-			this.createGame(data.maxPlayers, data.password);
+			this.createGame(data.name, data.maxPlayers, data.password);
 			ack(api.succ());
 		});
 
@@ -37,12 +37,12 @@ function Lobby(api) {
 		api.off(socket, api.calls.JOIN_GAME);
 	}
 
-	this.createGame = function(maxPlayers, password) {
+	this.createGame = function(name, maxPlayers, password) {
 		let id = generateUID();
 		while (this.getGame(id)) {
 			id = generateUID();
 		}
-		this.games.push(new Game(id, maxPlayers, password));
+		this.games.push(new Game(id, name, maxPlayers, password));
 	}
 
 	this.getCurrentGame = function(user) {

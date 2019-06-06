@@ -1,7 +1,8 @@
-function Game(id, maxPlayers, passwd) {
+function Game(id, name, maxPlayers, passwd) {
 	var password = passwd;
 
 	this.id = id;
+	this.name = name;
 	this.maxPlayers = maxPlayers;
 	this.hasPassword = password !== "";
 	this.users = [];

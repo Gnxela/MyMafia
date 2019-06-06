@@ -10,7 +10,7 @@ function API() {
 		WELCOME: {action: "WELCOME", data: {}},
 		DISCONNECT: {action: "DISCONNECT", data: {reason: ""}},
 		GET_GAMES: {action: "GET_GAMES", data: {}},
-		CREATE_GAME: {action: "CREATE_GAME", data: {maxPlayers: 1, password: ""}},
+		CREATE_GAME: {action: "CREATE_GAME", data: {name: "", maxPlayers: 1, password: ""}},
 		JOIN_GAME: {action: "JOIN_GAME", data: {id: "", password: ""}},
 	};
 

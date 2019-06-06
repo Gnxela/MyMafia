@@ -8,6 +8,9 @@ function openPage(page) {
 	case 'game':
 		openGame();
 		break;
+	case 'createGame':
+		openCreateGame();
+		break;
 	default:
 		throw "Invalid page: " + page;
 	}
@@ -47,9 +50,6 @@ function openLoby() {
 	let header = createDiv("header")
 	container.appendChild(header);
 
-			let TEST = createButton("TEST", "create-game");
-			TEST.addEventListener('click', () => createGame(7, ""));
-			header.appendChild(TEST);
 	let createGamee = createButton("Create Game", "create-game");
 	createGamee.addEventListener('click', () => openPage('createGame'));
 	header.appendChild(createGamee);
@@ -63,17 +63,38 @@ function openLoby() {
 	refreshGames()
 }
 
+function openCreateGame() {
+	container.innerHTML = '<input id="name" /><input id="maxPlayers" /><input id="password" />';
+	let create = createButton("Create Game", "create-game")
+	create.addEventListener('click', () => {
+		// TODO Verify data
+		let nameInput = document.getElementById("name");
+		let maxPlayersInput = document.getElementById("maxPlayers");
+		let passwordInput = document.getElementById("password");
+		createGame(nameInput.value, parseInt(maxPlayersInput.value), passwordInput.value)
+	});
+	container.appendChild(create);
+}
+
 function createButton(text, id, clazz) {
 	let button = document.createElement("button");
 	button.innerHTML = text;
-	button.id = id;
-	button.className = clazz;
+	if (id) {
+		button.id = id;
+	}
+	if (clazz) {
+		button.className = clazz;
+	}
 	return button;
 }
 
 function createDiv(id, clazz) {
 	let div = document.createElement("div");
-	div.id = id;
-	div.className = clazz;
+	if (id) {
+		div.id = id;
+	}
+	if (clazz) {
+		div.className = clazz;
+	}
 	return div;
 }

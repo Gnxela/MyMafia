@@ -14,8 +14,8 @@ async function joinGame(id, password) {
 	openPage("game");
 }
 
-async function createGame() {
-	let data = await api.emitSync(socket, api.calls.CREATE_GAME, {maxPlayers: 3, password: "test"});
+async function createGame(name, maxPlayers, password) {
+	let data = await api.emitSync(socket, api.calls.CREATE_GAME, {name: name, maxPlayers: maxPlayers, password: password});
 	if (data.ok === false) {
 		error("Failed to create game: " + data.err);
 		return false;
