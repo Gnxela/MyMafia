@@ -72,6 +72,11 @@ function API(username, session) {
 				return "Data incorect for " + apiCall.action + ":" + key + ". Expected: "  + typeof apiCall.data[key] + ". Got: " + typeof data[key] + ". Value: " + data[key];
 			}
 		}
+		for (let key in data) {
+			if (!apiCall.data[key]) {
+				return "Unexpected data in " + apiCall.action + ":" + key + ". Value: " + data[key];
+			}
+		}
 		return "";
 	}
 
