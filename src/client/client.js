@@ -8,7 +8,7 @@ async function joinGame(id, password) {
 	}
 	let data = await api.emitSync(socket, api.calls.JOIN_GAME, {id: id, password: password});
 	if (!data.ok) {
-		error("Failed to create game: " + data.err);
+		error("Failed to join game: " + data.err);
 		return false;
 	}
 	openPage("game");

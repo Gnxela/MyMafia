@@ -24,6 +24,10 @@ function Lobby(api) {
 				ack(api.fail("Game with id '" + data.id + "' does not exist."));
 				return;
 			}
+			if (game.hasPassword && !game.checkPassword(data.password)) {
+				ack(api.fail("Incorrect password."));
+				return;
+			}
 			//TODO is game is progress?
 			game.registerSocket(user);
 			this.cleanupSocket(socket);
