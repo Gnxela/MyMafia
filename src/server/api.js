@@ -5,14 +5,18 @@ function API() {
 	 * API calls. Data is the data the server expects to receive from the client.
 	 */
 	this.calls = {
+		//System
 		HEARTBEAT: {action: "HEARTBEAT", data: {}},
 		GET_PATHS: {action: "GET_PATHS", data: {}},
 		HANDSHAKE: {action: "HANDSHAKE", data: {}},
-		WELCOME: {action: "WELCOME", data: {}},
 		DISCONNECT: {action: "DISCONNECT", data: {reason: ""}},
+		//Lobby
+		WELCOME: {action: "WELCOME", data: {}},
 		GET_GAMES: {action: "GET_GAMES", data: {}},
 		CREATE_GAME: {action: "CREATE_GAME", data: {name: "", maxPlayers: 1, password: ""}},
+		//Game
 		JOIN_GAME: {action: "JOIN_GAME", data: {id: "", password: ""}},
+		NEW_FRAME: {action: "NEW_FRAME", data: {}},
 	};
 
 	this.use = function(func) {

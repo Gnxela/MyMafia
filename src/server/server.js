@@ -65,6 +65,10 @@ function Server(http) {
 		return false;
 	}
 
+	this.roomSocket = function(room) {
+		return io.to(room);
+	}
+
 	var addMiddleware = function() {
 		api.use((socket, data) => {
 			let user = users[data.username];

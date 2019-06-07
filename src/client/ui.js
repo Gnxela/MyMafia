@@ -18,7 +18,6 @@ function openPage(page) {
 }
 
 function openGame() {
-	console.log(1);
 	container.innerHTML = 'game!';
 }
 

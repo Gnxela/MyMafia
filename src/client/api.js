@@ -2,14 +2,18 @@ function API(username, session) {
 	var middleware = [];
 
 	this.calls = { //API calls RECEIVED by the client.
+		//System
 		HEARTBEAT: {action: "HEARTBEAT", data: {}},
 		GET_PATHS: {action: "GET_PATHS", data: {paths: []}},
 		HANDSHAKE: {action: "HANDSHAKE", data: {}},
-		WELCOME: {action: "WELCOME", data: {games: []}},
 		DISCONNECT: {action: "DISCONNECT", data: {reason: ""}},
+		//Lobby
+		WELCOME: {action: "WELCOME", data: {games: []}},
 		GET_GAMES: {action: "GET_GAMES", data: {}},
 		CREATE_GAME: {action: "CREATE_GAME", data: {}},
+		//Game
 		JOIN_GAME: {action: "JOIN_GAME", data: {ok: true, err: ""}},
+		NEW_FRAME: {action: "NEW_FRAME", data: {frames: []}},
 	};
 
 	this.use = function(func) {
