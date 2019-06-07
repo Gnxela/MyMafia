@@ -15,12 +15,13 @@ function Game(id, name, maxPlayers, passwd) {
 	this.frames.push(new Frame("Pre-game"));
 
 	this.registerSocket = function(user, socket) {
+		socket.join(room);
 		if (this.users.includes(user)) {
+			console.log(user.username + " already in game.");
 			return;
 		}
 		this.users.push(user);
-		socket.join(room);
-		console.log(user.username + " joined <game " + id + ">")
+		console.log(user.username + " joined <game " + id + ">");
 	}
 
 	this.getCurrentFrame = function() {

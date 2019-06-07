@@ -9,8 +9,8 @@ function API(username, session) {
 		DISCONNECT: {action: "DISCONNECT", data: {reason: ""}},
 		//Lobby
 		WELCOME: {action: "WELCOME", data: {games: []}},
-		GET_GAMES: {action: "GET_GAMES", data: {}},
-		CREATE_GAME: {action: "CREATE_GAME", data: {}},
+		GET_GAMES: {action: "GET_GAMES", data: {games: []}},
+		CREATE_GAME: {action: "CREATE_GAME", data: {ok: true, err: ""}},
 		//Game
 		JOIN_GAME: {action: "JOIN_GAME", data: {ok: true, err: ""}},
 		NEW_FRAME: {action: "NEW_FRAME", data: {frames: []}},
