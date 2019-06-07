@@ -10,7 +10,7 @@ function Lobby(api) {
 			return;
 		}
 		api.on(socket, api.calls.GET_GAMES, (user, data, ack) => {
-			ack(this.games);
+			ack({games: this.games});
 		});
 
 		api.on(socket, api.calls.CREATE_GAME, (user, data, ack) => {

@@ -25,7 +25,7 @@ async function createGame(name, maxPlayers, password) {
 }
 
 async function getGames() {
-	return await api.emitSync(socket, api.calls.GET_GAMES, {});
+	return (await api.emitSync(socket, api.calls.GET_GAMES, {})).games;
 }
 
 function init(games) {
