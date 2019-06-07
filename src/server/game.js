@@ -12,7 +12,7 @@ function Game(id, name, maxPlayers, passwd) {
 	this.inProgress = false;
 	this.frames = [];
 
-	frames.push(new Frame("Pre-game"));
+	this.frames.push(new Frame("Pre-game"));
 
 	this.registerSocket = function(user, socket) {
 		if (this.users.includes(user)) {
@@ -32,8 +32,8 @@ function Game(id, name, maxPlayers, passwd) {
 			return;
 		}
 		inProgress = true;
-		frames.push(new Frame("Night 0"));
-		api.emit(server.roomSocket(room), api.calls.NEW_FRAME, {frames: frames});
+		this.frames.push(new Frame("Night 0"));
+		api.emit(server.roomSocket(room), api.calls.NEW_FRAME, {frames: this.frames});
 	}
 
 	this.checkPassword = function(passwd) {

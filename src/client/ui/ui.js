@@ -1,78 +1,25 @@
 var container;
+var currentUI;
 
 function openPage(page) {
+	if (currentUI) {
+		currentUI.close();
+	}
 	switch (page) {
 	case 'lobby':
-		openLoby();
+		currentUI = new Lobby();
 		break;
 	case 'game':
-		openGame();
+		currentUI = new Game();
 		break;
 	case 'createGame':
-		openCreateGame();
+		currentUI = new CreateGame();
 		break;
 	default:
 		throw "Invalid page: " + page;
 	}
 	container.className = page;
-}
-
-function openGame() {
-	container.innerHTML = 'game!';
-}
-
-function openLoby() {
-	container.innerHTML = '';
-
-	let refreshGames = async function() {
-		document.getElementById("games-container").innerHTML = "";
-		let games = await getGames();
-		for (let i = 0; i < games.length; i++) {
-			let game = games[i];
-			let gameDiv = createDiv("", "game");
-			let hasPassword = createDiv("", (game.hasPassword ? "has" : "no") + "-password password");
-			gameDiv.appendChild(hasPassword);
-			let players = createDiv("", "num-players");
-			players.innerHTML = game.users.length;
-			gameDiv.appendChild(players);
-			let maxPlayers = createDiv("", "max-players");
-			maxPlayers.innerHTML = game.maxPlayers;
-			gameDiv.appendChild(maxPlayers);
-			let joinGamee = createButton("Join", "", "join");
-			joinGamee.addEventListener('click', () => joinGame(game.id));
-			gameDiv.appendChild(joinGamee);
-
-			gamesContainer.appendChild(gameDiv);
-		}
-	}
-
-	let header = createDiv("header")
-	container.appendChild(header);
-
-	let createGamee = createButton("Create Game", "create-game");
-	createGamee.addEventListener('click', () => openPage('createGame'));
-	header.appendChild(createGamee);
-	let refresh = createButton("Refresh", "refresh");
-	refresh.addEventListener('click', refreshGames);
-	header.appendChild(refresh);
-
-	let gamesContainer = createDiv("games-container")
-	container.appendChild(gamesContainer);
-
-	refreshGames()
-}
-
-function openCreateGame() {
-	container.innerHTML = '<input id="name" /><input id="maxPlayers" /><input id="password" />';
-	let create = createButton("Create Game", "create-game")
-	create.addEventListener('click', () => {
-		// TODO Verify data
-		let nameInput = document.getElementById("name");
-		let maxPlayersInput = document.getElementById("maxPlayers");
-		let passwordInput = document.getElementById("password");
-		createGame(nameInput.value, parseInt(maxPlayersInput.value), passwordInput.value)
-	});
-	container.appendChild(create);
+	currentUI.open();
 }
 
 function createButton(text, id, clazz) {

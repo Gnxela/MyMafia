@@ -29,7 +29,7 @@ function Lobby(api) {
 				return;
 			}
 			//TODO is game is progress?
-			game.registerSocket(user);
+			game.registerSocket(user, socket);
 			this.cleanupSocket(socket);
 			ack(api.succ());
 		});
