@@ -48,7 +48,7 @@ function Lobby(api) {
 	this.getCurrentGame = function(user) {
 		for (let i = 0; i < this.games.length; i++) {
 			for (let j = 0; j < this.games[i].users.length; j++) {
-				if (this.games[j].users[j] == user) {
+				if (this.games[j].users[j] === user) {
 					return this.games[j]
 				}
 			}

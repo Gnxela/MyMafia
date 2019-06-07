@@ -28,7 +28,7 @@ function defineGlobals() {
 
 	global.loadJSONFile = function(file) {
 		let text = loadFile(file);
-		if (text == "" || text == "\n") {
+		if (!text || text === "\n") {
 			return undefined;
 		}
 		return JSON.parse(text);

@@ -36,7 +36,7 @@ function init(games) {
 	for (let i = 0; i < games.length; i++) {
 		let game = games[i];
 		for (let j = 0; j < game.users.length; j++) {
-			if (game.users[j].username == username) {
+			if (game.users[j].username === username) {
 				openPage('game')
 				return;
 			}

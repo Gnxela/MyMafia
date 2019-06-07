@@ -50,7 +50,7 @@ function Server(http) {
 		if (!user) {
 			return "";
 		}
-		if (user.username == username && user.getPassword() == passwordHash) {
+		if (user.username === username && user.getPassword() === passwordHash) {
 			user.setSession(generateUID())
 			this.saveUsers();
 			return user.getSession();;
