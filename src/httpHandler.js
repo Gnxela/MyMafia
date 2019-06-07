@@ -78,17 +78,26 @@ function HTTPHandler(app, http) {
 			res.sendFile(rootDir + "/data/pages/game.css");
 			break;
 		case "game.js":
-			let bundledScript = "";
-			fs.readdirSync(rootDir + "/src/client/").forEach(file => {
-				bundledScript += loadFile(rootDir + "/src/client/"  + file);
-			});
-			res.send(bundledScript);
+			res.send(bundleDir(rootDir + "/src/client/"));
 			break;
 		default:
 			res.send("INVALID RESOURCE.");
 			break;
 		}
 	});
+
+	function bundleDir(dir) {
+		let bundled = "";
+		fs.readdirSync(dir).forEach(file => {
+			let stat = fs.lstatSync(dir + file);
+			if (stat.isDirectory()) {
+				bundled += bundleDir(dir + file + "/");
+			} else {
+				bundled += loadFile(dir + file);
+			}
+		});
+		return bundled;
+	}
 
 	http.listen(9999, function() {
 		console.log("Listening on port 9999");
