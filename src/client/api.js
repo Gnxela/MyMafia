@@ -3,12 +3,13 @@ function API(username, session) {
 
 	this.calls = { //API calls RECEIVED by the client.
 		HEARTBEAT: {action: "HEARTBEAT", data: {}},
+		GET_PATHS: {action: "GET_PATHS", data: {paths: []}},
 		HANDSHAKE: {action: "HANDSHAKE", data: {}},
 		WELCOME: {action: "WELCOME", data: {games: []}},
 		DISCONNECT: {action: "DISCONNECT", data: {reason: ""}},
 		GET_GAMES: {action: "GET_GAMES", data: {}},
 		CREATE_GAME: {action: "CREATE_GAME", data: {}},
-		JOIN_GAME: {action: "JOIN_GAME", data: {}},
+		JOIN_GAME: {action: "JOIN_GAME", data: {ok: true, err: ""}},
 	};
 
 	this.use = function(func) {
@@ -30,11 +31,11 @@ function API(username, session) {
 		if (!apiCall) {
 			throw new Error("apiCall not defined.");
 		}
-		let err = verifyData(apiCall, data);
-		if (err) {
-			throw err;
-		}
 		socket.emit(apiCall.action, {action: apiCall.action, username: username, session: session, data: data}, (callbackData) => {
+			let err = verifyData(apiCall, callbackData);
+			if (err) {
+				throw err;
+			}
 			if (callback) {
 				callback(callbackData);
 			}
@@ -58,7 +59,7 @@ function API(username, session) {
 	}
 
 	this.succ = function() {
-		return {ok: true, err: null};
+		return {ok: true, err: ""};
 	}
 
 	function verifyData(apiCall, data) {
@@ -83,7 +84,7 @@ function API(username, session) {
 		let call = function(data, ackCallback) {
 			let err = verifyData(apiCall, data.data);
 			if (err) {
-				console.log(err);
+				throw err;
 			}
 			if (!runMiddleware(socket, data)) {
 				console.log("Failed packet: " + apiCall.action + ":" + JSON.stringify(data));

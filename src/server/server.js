@@ -29,6 +29,7 @@ function Server(http) {
 
 	this.registerSocket =  function (user, socket) {
 		api.on(socket, api.calls.HEARTBEAT, () => {});
+		api.on(socket, api.calls.GET_PATHS, () => {});
 		lobby.registerSocket(user, socket);
 		api.emit(socket, api.calls.WELCOME, {games: lobby.games});
 	}

@@ -6,6 +6,7 @@ function API() {
 	 */
 	this.calls = {
 		HEARTBEAT: {action: "HEARTBEAT", data: {}},
+		GET_PATHS: {action: "GET_PATHS", data: {}},
 		HANDSHAKE: {action: "HANDSHAKE", data: {}},
 		WELCOME: {action: "WELCOME", data: {}},
 		DISCONNECT: {action: "DISCONNECT", data: {reason: ""}},
@@ -37,11 +38,11 @@ function API() {
 		if (!apiCall) {
 			throw new Error("apiCall not defined.");
 		}
-		let err = verifyData(apiCall, data);
-		if (err) {
-			throw err;
-		}
 		socket.emit(apiCall.action, {action: apiCall.action, data: data}, (callbackData) => {
+			let err = verifyData(apiCall, data);
+			if (err) {
+				throw err;
+			}
 			if (callback) {
 				callback(callbackData);
 			}
@@ -65,7 +66,7 @@ function API() {
 	}
 
 	this.succ = function() {
-		return {ok: true, err: null};
+		return {ok: true, err: ""};
 	}
 
 	function verifyData(apiCall, data) {
