@@ -40,6 +40,12 @@ function User(username, _password, _session, lastSeen) {
 		}
 	}
 
+	this.disconnect = function(socket, reason) {
+		api.emit(socket, api.calls.DISCONNECT, {reason: reason});
+		console.log("Disconnected " + this.username + ". Reason: " + reason);
+		socket.disconnect(true);
+	}
+
 	this.setSession = function(_session) {
 		session = _session;
 	}

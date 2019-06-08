@@ -11,8 +11,9 @@ function API(username, session) {
 		WELCOME: {action: "WELCOME", data: {games: []}},
 		GET_GAMES: {action: "GET_GAMES", data: {games: []}},
 		CREATE_GAME: {action: "CREATE_GAME", data: {ok: true, err: ""}},
-		//Game
 		JOIN_GAME: {action: "JOIN_GAME", data: {ok: true, err: ""}},
+		//Game
+		GET_GAME: {action: "GET_GAME", data: {game: {}}},
 		NEW_FRAME: {action: "NEW_FRAME", data: {frames: []}},
 	};
 
@@ -38,7 +39,7 @@ function API(username, session) {
 		socket.emit(apiCall.action, {action: apiCall.action, username: username, session: session, data: data}, (callbackData) => {
 			let err = verifyData(apiCall, callbackData);
 			if (err) {
-				throw err;
+				throw new Error("emit() callback: " + err);
 			}
 			if (callback) {
 				callback(callbackData);
@@ -67,15 +68,15 @@ function API(username, session) {
 	}
 
 	function verifyData(apiCall, data) {
+		let copiedData = JSON.parse(JSON.stringify(data));
 		for (let key in apiCall.data) {
 			if (typeof apiCall.data[key] != typeof data[key]) {
 				return "Data incorect for " + apiCall.action + ":" + key + ". Expected: "  + typeof apiCall.data[key] + ". Got: " + typeof data[key] + ". Value: " + data[key];
 			}
+			delete copiedData[key]
 		}
-		for (let key in data) {
-			if (!apiCall.data[key]) {
-				return "Unexpected data in " + apiCall.action + ":" + key + ". Value: " + data[key];
-			}
+		for (let key in copiedData) {
+			return "Unexpected data in " + apiCall.action + ":" + key + ". Value: " + copiedData[key];
 		}
 		return "";
 	}
@@ -93,7 +94,7 @@ function API(username, session) {
 		let call = function(data, ackCallback) {
 			let err = verifyData(apiCall, data.data);
 			if (err) {
-				throw err;
+				throw new Error("on(): " + err);
 			}
 			if (!runMiddleware(socket, data)) {
 				console.log("Failed packet: " + apiCall.action + ":" + JSON.stringify(data));

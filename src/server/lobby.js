@@ -6,15 +6,18 @@ function Lobby(api) {
 	this.registerSocket = function(user, socket) {
 		let currentGame = this.getCurrentGame(user)
 		if (currentGame) {
-			currentGame.registerSocket(user, socket);
-			return;
+			if (!currentGame.isFinished) {
+				currentGame.registerSocket(user, socket);
+				return;
+			}
+			this.removeGame(currentGame);
 		}
 		api.on(socket, api.calls.GET_GAMES, (user, data, ack) => {
 			ack({games: this.games});
 		});
 
 		api.on(socket, api.calls.CREATE_GAME, (user, data, ack) => {
-			this.createGame(data.name, data.maxPlayers, data.password);
+			this.createGame(data.name, user, data.maxPlayers, data.password);
 			ack(api.succ());
 		});
 
@@ -47,6 +50,7 @@ function Lobby(api) {
 			id = generateUID();
 		}
 		this.games.push(new Game(id, name, maxPlayers, password));
+		return id;
 	}
 
 	this.getCurrentGame = function(user) {
@@ -67,6 +71,14 @@ function Lobby(api) {
 			}
 		}
 		return null;
+	}
+
+	this.removeGame = function(game) {
+		for (let i = 0; i < this.games.length; i++) {
+			if (games[i] === game) {
+				this.games.splice(i, 1);
+			}
+		}
 	}
 }
 

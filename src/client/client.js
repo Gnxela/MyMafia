@@ -1,6 +1,7 @@
 var socket;
 var api;
 var username;
+var currentGameID;
 
 async function joinGame(id, password) {
 	if (!password) {
@@ -11,6 +12,7 @@ async function joinGame(id, password) {
 		error("Failed to join game: " + data.err);
 		return false;
 	}
+	currentGameID = id;
 	openPage("game");
 }
 
@@ -28,6 +30,10 @@ async function getGames() {
 	return (await api.emitSync(socket, api.calls.GET_GAMES, {})).games;
 }
 
+async function getGame() {
+	return (await api.emitSync(socket, api.calls.GET_GAME, {id: currentGameID}).game);
+}
+
 function init(games) {
 	setInterval(() => {
 		api.emit(socket, api.calls.HEARTBEAT, {});
@@ -38,6 +44,7 @@ function init(games) {
 		for (let j = 0; j < game.users.length; j++) {
 			if (game.users[j].username === username) {
 				openPage('game')
+				currentGameID = game.id;
 				return;
 			}
 		}

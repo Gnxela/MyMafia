@@ -72,16 +72,14 @@ function Server(http) {
 	var addMiddleware = function() {
 		api.use((socket, data) => {
 			let user = users[data.username];
-			if (!user) {
+			if (!user) { //We don't know the user :(
 				api.emit(socket, api.calls.DISCONNECT, {reason: "Invalid session."});
 				console.log("Disconnected " + data.username + " for invalid session. Username did not exist.");
 				socket.disconnect(true);
 				return false;
 			}
 			if (!user.isLoggedIn(data.session)) {
-				api.emit(socket, api.calls.DISCONNECT, {reason: "Invalid session."});
-				console.log("Disconnected " + data.username + " for invalid session.");
-				socket.disconnect(true);
+				user.disconnect();
 				return false;
 			}
 			return true;

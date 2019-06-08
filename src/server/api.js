@@ -14,8 +14,9 @@ function API() {
 		WELCOME: {action: "WELCOME", data: {}},
 		GET_GAMES: {action: "GET_GAMES", data: {}},
 		CREATE_GAME: {action: "CREATE_GAME", data: {name: "", maxPlayers: 1, password: ""}},
-		//Game
 		JOIN_GAME: {action: "JOIN_GAME", data: {id: "", password: ""}},
+		//Game
+		GET_GAME: {action: "GET_GAME", data: {}},
 		NEW_FRAME: {action: "NEW_FRAME", data: {}},
 	};
 
@@ -44,8 +45,11 @@ function API() {
 		}
 		socket.emit(apiCall.action, {action: apiCall.action, data: data}, (callbackData) => {
 			let err = verifyData(apiCall, data);
-			if (err) {
-				throw err;
+			if (err) {// We don't know the user (and no point searching for them).
+				api.emit(socket, api.calls.DISCONNECT, {reason: err});
+				console.log("Disconnected " + socket.handshake.address + ". Reason: " + err);
+				socket.disconnect(true);
+				callback(api.fail());
 			}
 			if (callback) {
 				callback(callbackData);
@@ -74,15 +78,14 @@ function API() {
 	}
 
 	function verifyData(apiCall, data) {
+		let copiedData = JSON.parse(JSON.stringify(data));
 		for (let key in apiCall.data) {
 			if (typeof apiCall.data[key] != typeof data[key]) {
 				return "Data incorect for " + apiCall.action + ":" + key + ". Expected: "  + typeof apiCall.data[key] + ". Got: " + typeof data[key] + ". Value: " + data[key];
 			}
 		}
-		for (let key in data) {
-			if (!apiCall.data[key]) {
-				return "Unexpected data in " + apiCall.action + ":" + key + ". Value: " + data[key];
-			}
+		for (let key in copiedData) {
+			return "Unexpected data in " + apiCall.action + ":" + key + ". Value: " + copiedData[key];
 		}
 		return "";
 	}
@@ -100,7 +103,7 @@ function API() {
 		let call = function(data, ackCallback) {
 			let err = verifyData(apiCall, data.data);
 			if (err) {
-				console.log(socket.handshake.address + ": " + err);
+				console.log(server.getUser(data.username) + ": " + err);
 				ackCallback({ok: false, err: err});
 			}
 			if (!runMiddleware(socket, data)) {

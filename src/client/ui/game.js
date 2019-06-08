@@ -1,9 +1,10 @@
 function Game() {
-	this.open = function() {
-		container.innerHTML = 'game!';
+	this.open = async function() {
+		let game = getGame();
+		container.innerHTML = frames;
 	}
 
-	this.close = function() {
+	this.close = async function() {
 
 	}
 }
