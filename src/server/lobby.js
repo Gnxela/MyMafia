@@ -12,12 +12,20 @@ function Lobby(api) {
 			}
 			this.removeGame(currentGame);
 		}
+		api.on(socket, api.calls.GET_GAME, (user, data, ack) => {
+			let game = this.getGame(data.id);
+			if (game.users.includes(user)) {
+				ack({game: game});
+			}
+			ack(api.fail("Invalid ID or not allowed (specify later)."));
+		})
+
 		api.on(socket, api.calls.GET_GAMES, (user, data, ack) => {
 			ack({games: this.games});
 		});
 
 		api.on(socket, api.calls.CREATE_GAME, (user, data, ack) => {
-			this.createGame(data.name, user, data.maxPlayers, data.password);
+			this.createGame(user, data.name, data.maxPlayers, data.password);
 			ack(api.succ());
 		});
 
@@ -44,12 +52,12 @@ function Lobby(api) {
 		api.off(socket, api.calls.JOIN_GAME);
 	}
 
-	this.createGame = function(name, maxPlayers, password) {
+	this.createGame = function(host, name, maxPlayers, password) {
 		let id = generateUID();
 		while (this.getGame(id)) {
 			id = generateUID();
 		}
-		this.games.push(new Game(id, name, maxPlayers, password));
+		this.games.push(new Game(api, id, host, name, maxPlayers, password));
 		return id;
 	}
 

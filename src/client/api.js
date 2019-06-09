@@ -39,6 +39,7 @@ function API(username, session) {
 		socket.emit(apiCall.action, {action: apiCall.action, username: username, session: session, data: data}, (callbackData) => {
 			let err = verifyData(apiCall, callbackData);
 			if (err) {
+				console.log("Data received: " + JSON.stringify(callbackData));
 				throw new Error("emit() callback: " + err);
 			}
 			if (callback) {

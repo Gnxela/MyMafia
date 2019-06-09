@@ -16,7 +16,7 @@ function API() {
 		CREATE_GAME: {action: "CREATE_GAME", data: {name: "", maxPlayers: 1, password: ""}},
 		JOIN_GAME: {action: "JOIN_GAME", data: {id: "", password: ""}},
 		//Game
-		GET_GAME: {action: "GET_GAME", data: {}},
+		GET_GAME: {action: "GET_GAME", data: {id: ""}},
 		NEW_FRAME: {action: "NEW_FRAME", data: {}},
 	};
 
@@ -50,6 +50,7 @@ function API() {
 				console.log("Disconnected " + socket.handshake.address + ". Reason: " + err);
 				socket.disconnect(true);
 				callback(api.fail());
+				return;
 			}
 			if (callback) {
 				callback(callbackData);
@@ -83,6 +84,7 @@ function API() {
 			if (typeof apiCall.data[key] != typeof data[key]) {
 				return "Data incorect for " + apiCall.action + ":" + key + ". Expected: "  + typeof apiCall.data[key] + ". Got: " + typeof data[key] + ". Value: " + data[key];
 			}
+			delete copiedData[key];
 		}
 		for (let key in copiedData) {
 			return "Unexpected data in " + apiCall.action + ":" + key + ". Value: " + copiedData[key];
@@ -103,8 +105,9 @@ function API() {
 		let call = function(data, ackCallback) {
 			let err = verifyData(apiCall, data.data);
 			if (err) {
-				console.log(server.getUser(data.username) + ": " + err);
+				console.log(server.getUser(data.username).username + ": " + err);
 				ackCallback({ok: false, err: err});
+				return;
 			}
 			if (!runMiddleware(socket, data)) {
 				console.log("Failed packet: " + apiCall.action + ":" + JSON.stringify(data));

@@ -4,7 +4,7 @@ function Frame(name) {
 	this.actions = [];
 
 	this.addAction = function(action) {
-		actions.push(action);
+		this.actions.push(action);
 	}
 
 }

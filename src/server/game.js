@@ -1,6 +1,6 @@
 var Frame = require("./frame.js");
 
-function Game(id, host, name, maxPlayers, passwd) {
+function Game(api, id, host, name, maxPlayers, passwd) {
 	var password = passwd;
 	var room = "game-" + id;
 
@@ -14,7 +14,10 @@ function Game(id, host, name, maxPlayers, passwd) {
 	this.isFinished = false;
 	this.frames = [];
 
-	this.frames.push(new Frame("Pre-game"));
+	this.init = function() {
+		this.frames.push(new Frame("Pre-game"));
+		this.getCurrentFrame().addAction("create_game", "%u created the game." [host]);
+	}
 
 	this.registerSocket = function(user, socket) {
 		socket.join(room);
@@ -36,13 +39,14 @@ function Game(id, host, name, maxPlayers, passwd) {
 		}
 		inProgress = true;
 		this.frames.push(new Frame("Night 0"));
-		this.getCurrentFrame().accAction("create_game", "%u created the game." [host]);
 		api.emit(server.roomSocket(room), api.calls.NEW_FRAME, {frames: this.frames});
 	}
 
 	this.checkPassword = function(passwd) {
 		return password === passwd;
 	}
+
+	this.init();
 }
 
 exports = module.exports = Game;

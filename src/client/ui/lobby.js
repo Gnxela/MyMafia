@@ -16,7 +16,13 @@ function Lobby() {
 			maxPlayers.innerHTML = game.maxPlayers;
 			gameDiv.appendChild(maxPlayers);
 			let joinGamee = createButton("Join", "", "join");
-			joinGamee.addEventListener('click', () => joinGame(game.id));
+			joinGamee.addEventListener('click', async () => {
+				if (await joinGame(game.id)) {
+					openPage("game");
+				} else {
+					console.log("Failed to join game.");
+				}
+			});
 			gameDiv.appendChild(joinGamee);
 
 			gamesContainer.appendChild(gameDiv);

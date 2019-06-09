@@ -9,29 +9,37 @@ async function joinGame(id, password) {
 	}
 	let data = await api.emitSync(socket, api.calls.JOIN_GAME, {id: id, password: password});
 	if (!data.ok) {
-		error("Failed to join game: " + data.err);
 		return false;
 	}
 	currentGameID = id;
-	openPage("game");
+	return true;
 }
 
 async function createGame(name, maxPlayers, password) {
 	let data = await api.emitSync(socket, api.calls.CREATE_GAME, {name: name, maxPlayers: maxPlayers, password: password});
 	if (data.ok === false) {
-		error("Failed to create game: " + data.err);
 		return false;
 	}
-	log("", data);
 	return true;
 }
 
 async function getGames() {
-	return (await api.emitSync(socket, api.calls.GET_GAMES, {})).games;
+	try {
+		return (await api.emitSync(socket, api.calls.GET_GAMES, {})).games;
+	} catch (e) {
+		throw new Error(e);
+	}
 }
 
 async function getGame() {
-	return (await api.emitSync(socket, api.calls.GET_GAME, {id: currentGameID}).game);
+	if (!currentGameID) {
+		return undefined;
+	}
+	try {
+		return (await api.emitSync(socket, api.calls.GET_GAME, {id: currentGameID})).game;
+	} catch (e) {
+		throw new Error(e);
+	}
 }
 
 function init(games) {
@@ -43,8 +51,8 @@ function init(games) {
 		let game = games[i];
 		for (let j = 0; j < game.users.length; j++) {
 			if (game.users[j].username === username) {
-				openPage('game')
 				currentGameID = game.id;
+				openPage('game')
 				return;
 			}
 		}
