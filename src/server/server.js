@@ -45,17 +45,11 @@ function Server(http) {
 	}
 
 	this.login = function(username, password) {
-		let passwordHash = sha.sha224(password + passwordSalt).toString('hex');
 		let user = this.getUser(username);
 		if (!user) {
 			return "";
 		}
-		if (user.username === username && user.getPassword() === passwordHash) {
-			user.setSession(generateUID())
-			this.saveUsers();
-			return user.getSession();;
-		}
-		return "";
+		return user.login(password);
 	}
 
 	this.isLoggedIn = function(username, session) {

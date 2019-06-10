@@ -34,7 +34,7 @@ function User(username, _password, _session, lastSeen) {
 	this.login = function(rawPassword) {
 		let passwordHash = sha.sha224(rawPassword + passwordSalt).toString('hex');
 		if (password === _password) {
-			session = global.generateUID();
+			return session = global.generateUID();
 		} else {
 			return ""
 		}
