@@ -78,7 +78,7 @@ function setupSocket() {
 	}
 	api = new API(username, session);
 	api.on(socket, api.calls.DISCONNECT, (data) => {
-		console.log("Server disconnected socket. Reason: " + data.reason);
+		log("Server disconnected socket. Reason: " + data.reason);
 		socket.disconnect(true);
 	});
 }

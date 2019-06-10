@@ -68,7 +68,7 @@ function Server(http) {
 			let user = users[data.username];
 			if (!user) { //We don't know the user :(
 				api.emit(socket, api.calls.DISCONNECT, {reason: "Invalid session."});
-				console.log("Disconnected " + data.username + " for invalid session. Username did not exist.");
+				log("Disconnected " + data.username + " for invalid session. Username did not exist.");
 				socket.disconnect(true);
 				return false;
 			}

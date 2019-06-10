@@ -16,14 +16,12 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 
 	this.init = function() {
 		this.frames.push(new Frame("Pre-game"));
-		console.log(host);
 		this.getCurrentFrame().addAction("create_game", "%u created the game.", [host]);
 	}
 
 	this.registerSocket = function(user, socket) {
 		api.on(socket, api.calls.GET_GAME, (user, data, ack) => {
 			let game = this;
-			console.log(game);
 			if (game.users.includes(user)) {
 				ack({game: game});
 			}
@@ -32,11 +30,11 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 
 		socket.join(room);
 		if (this.users.includes(user)) {
-			console.log(user.username + " already in game.");
+			log(user.username + " already in game.");
 			return;
 		}
 		this.users.push(user);
-		console.log(user.username + " joined <game " + id + ">");
+		log(user.username + " joined <game " + id + ">");
 	}
 
 	this.getCurrentFrame = function() {

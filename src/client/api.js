@@ -39,7 +39,7 @@ function API(username, session) {
 		socket.emit(apiCall.action, {action: apiCall.action, username: username, session: session, data: data}, (callbackData) => {
 			let err = verifyData(apiCall, callbackData);
 			if (err) {
-				console.log("Data received: " + JSON.stringify(callbackData));
+				log("Data received: " + JSON.stringify(callbackData));
 				throw new Error("emit() callback: " + err);
 			}
 			if (callback) {
@@ -98,7 +98,7 @@ function API(username, session) {
 				throw new Error("on(): " + err);
 			}
 			if (!runMiddleware(socket, data)) {
-				console.log("Failed packet: " + apiCall.action + ":" + JSON.stringify(data));
+				log("Failed packet: " + apiCall.action + ":" + JSON.stringify(data));
 				return;
 			}
 			callback(data.data, ackCallback);

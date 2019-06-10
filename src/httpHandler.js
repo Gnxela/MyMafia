@@ -100,7 +100,7 @@ function HTTPHandler(app, http) {
 	}
 
 	http.listen(9999, function() {
-		console.log("Listening on port 9999");
+		log("Listening on port 9999");
 	});
 }
 

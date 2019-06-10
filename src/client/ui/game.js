@@ -11,8 +11,8 @@ function Game() {
 		let frameContainer = createDiv("frame-container");
 
 		let frameHeader = createDiv("frame-header");
-		let framePrev = createButton("frame-prev");
-		let frameNext = createButton("frame-next");
+		let framePrev = createButton("<", "frame-prev");
+		let frameNext = createButton(">", "frame-next");
 		let frameTitle = createDiv("frame-name");
 		frameTitle.innerHTML = frame.name;
 		frameHeader.appendChild(framePrev);
@@ -31,7 +31,6 @@ function Game() {
 	}
 
 	function createAction(action) {
-		console.log(action);
 		let a = createDiv("", "action " + action.type);
 		a.innerHTML = formatAction(action.format, action.users);
 		return a;

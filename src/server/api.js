@@ -47,7 +47,7 @@ function API() {
 			let err = verifyData(apiCall, data);
 			if (err) {// We don't know the user (and no point searching for them).
 				api.emit(socket, api.calls.DISCONNECT, {reason: err});
-				console.log("Disconnected " + socket.handshake.address + ". Reason: " + err);
+				log("Disconnected " + socket.handshake.address + ". Reason: " + err);
 				socket.disconnect(true);
 				callback(api.fail());
 				return;
@@ -105,12 +105,12 @@ function API() {
 		let call = function(data, ackCallback) {
 			let err = verifyData(apiCall, data.data);
 			if (err) {
-				console.log(server.getUser(data.username).username + ": " + err);
+				log(server.getUser(data.username).username + ": " + err);
 				ackCallback({ok: false, err: err});
 				return;
 			}
 			if (!runMiddleware(socket, data)) {
-				console.log("Failed packet: " + apiCall.action + ":" + JSON.stringify(data));
+				log("Failed packet: " + apiCall.action + ":" + JSON.stringify(data));
 				return;
 			}
 			callback(server.getUser(data.username), data.data, ackCallback);

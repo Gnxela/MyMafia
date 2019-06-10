@@ -20,7 +20,7 @@ function Lobby() {
 				if (await joinGame(game.id)) {
 					openPage("game");
 				} else {
-					console.log("Failed to join game.");
+					error("Failed to join game.");
 				}
 			});
 			gameDiv.appendChild(joinGamee);
