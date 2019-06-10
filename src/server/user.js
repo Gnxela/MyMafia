@@ -33,8 +33,10 @@ function User(username, _password, _session, lastSeen) {
 
 	this.login = function(rawPassword) {
 		let passwordHash = sha.sha224(rawPassword + passwordSalt).toString('hex');
-		if (password === _password) {
-			return session = global.generateUID();
+		if (password === passwordHash) {
+			session = global.generateUID();
+			server.saveUsers();
+			return session;
 		} else {
 			return ""
 		}
