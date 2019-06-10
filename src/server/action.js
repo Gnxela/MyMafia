@@ -3,3 +3,5 @@ function Action(type, format, users) {
 	this.format = format;
 	this.users = users;
 }
+
+exports = module.exports = Action;

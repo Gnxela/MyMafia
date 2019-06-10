@@ -16,7 +16,8 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 
 	this.init = function() {
 		this.frames.push(new Frame("Pre-game"));
-		this.getCurrentFrame().addAction("create_game", "%u created the game." [host]);
+		console.log(host);
+		this.getCurrentFrame().addAction("create_game", "%u created the game.", [host]);
 	}
 
 	this.registerSocket = function(user, socket) {
