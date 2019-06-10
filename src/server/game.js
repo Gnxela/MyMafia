@@ -21,6 +21,15 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 	}
 
 	this.registerSocket = function(user, socket) {
+		api.on(socket, api.calls.GET_GAME, (user, data, ack) => {
+			let game = this;
+			console.log(game);
+			if (game.users.includes(user)) {
+				ack({game: game});
+			}
+			ack(api.fail("Invalid ID or not allowed (specify later)."));
+		});
+
 		socket.join(room);
 		if (this.users.includes(user)) {
 			console.log(user.username + " already in game.");

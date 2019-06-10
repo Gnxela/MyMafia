@@ -12,13 +12,6 @@ function Lobby(api) {
 			}
 			this.removeGame(currentGame);
 		}
-		api.on(socket, api.calls.GET_GAME, (user, data, ack) => {
-			let game = this.getGame(data.id);
-			if (game.users.includes(user)) {
-				ack({game: game});
-			}
-			ack(api.fail("Invalid ID or not allowed (specify later)."));
-		})
 
 		api.on(socket, api.calls.GET_GAMES, (user, data, ack) => {
 			ack({games: this.games});

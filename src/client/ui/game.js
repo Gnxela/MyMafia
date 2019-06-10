@@ -1,11 +1,9 @@
 function Game() {
 	this.open = async function() {
+		container.innerHTML = 'Loading...';
 		let game = await getGame();
-		container.innerHTML = '';
-
-			console.log(game);
-
 		let frameContainer = createFrame(game.frames[game.frames.length - 1]);
+		container.innerHTML = '';
 		container.appendChild(frameContainer);
 	}
 
