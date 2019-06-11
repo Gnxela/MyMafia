@@ -1,7 +1,7 @@
 function CreateGame() {
 
 	this.open = async function() {
-		container.innerHTML = '<input id="name" /><input id="maxPlayers" /><input id="password" />';
+		container.innerHTML = '<input id="name" placeholder="Name" /><input id="maxPlayers" placeholder="Max Players"/><input id="password" placeholder="Password"/>';
 		let create = createButton("Create Game", "create-game")
 		create.addEventListener('click', () => {
 			// TODO Verify data
