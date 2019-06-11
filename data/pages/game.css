@@ -1,40 +1,111 @@
 body {
 	margin: 0px;
 }
+
 button {
 	border: 0px;
 	margin: 0px;
 	padding: 5px;
 }
-#games-container {
+
+/* LOBBY */
+
+.lobby #games-container {
 	width: 100%;
 }
-#header button{
+
+.lobby #header button{
 	width: 50%;
 	padding: 20px;
 }
-.game {
+
+.lobby .game {
 	width: 100%;
 	height: 40px;
 	border-top: 1px solid #777777;
 }
-#games-container .game:nth-child(1) {
+
+.lobby #games-container .game:nth-child(1) {
 	border-top: 0px;
 }
-.game .password {
+
+.lobby .game .password {
 	display: inline-block;
 	width: 40px;
 	height: 100%;
 }
-.game .has-password {
+
+.lobby .game .has-password {
 	background-color: red;
 }
-.game .no-password {
+
+.lobby .game .no-password {
 	background-color: green;
 }
-.game > .max-players, .game > .num-players {
+
+.lobby .game > .max-players, .game > .num-players {
 	display: inline-block;
 	height: 100%;
 	width: 50px;
 	vertical-align: bottom;
+}
+
+/* CREATE_GAME */
+
+.createGame {
+	text-align: center;
+}
+
+.createGame input {
+	display: block;
+	margin: auto;
+	margin-top: 5px;
+}
+
+.createGame button {
+	margin-top: 5px;
+}
+
+/* GAME */
+
+.game #frame-container {
+	text-align: center;
+}
+
+.game #frame-header {
+	background-color: #EFEFEF;
+	padding: 5px;
+}
+
+.game #frame-header button {
+	padding: 6px 10px 6px 10px;
+}
+
+.game #frame-prev, .game #frame-name, .game #frame-next {
+	display: inline-block;
+}
+
+.game #frame-name {
+	padding: 0px 20px;
+}
+
+.game #action-container {
+	max-width: 700px;
+	width: 75%;
+	margin: auto;
+}
+
+.game #action-container .action {
+	font-family: Helvetica, sans-serif;
+	padding: 3px;
+}
+
+.game #action-container .action.create_game:before {
+	display: inline-block;
+	margin: 3px;
+	content: "\00a0\00a0";
+	width: 20px;
+	height: 20px;
+	background-color: red;
+	vertical-align: middle;
 }
