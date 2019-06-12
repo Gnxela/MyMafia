@@ -25,12 +25,12 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 			if (game.users.includes(user)) {
 				ack({game: game});
 			}
-			ack(api.fail("Invalid ID or not allowed (specify later)."));
+			ack(api.fail("Invalid request (not sure how but you registered for a game you're not in)."));
 		});
 
 		socket.join(room);
 		if (this.users.includes(user)) {
-			log(user.username + " already in game.");
+			log(user.toString() + " already in game.");
 			return;
 		}
 		this.users.push(user);

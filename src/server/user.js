@@ -16,13 +16,13 @@ function User(username, _password, _session, lastSeen) {
 	this.updateLastSeen = function() {
 		let timeNow = new Date().getTime();
 		if (timeNow - this.lastSeen > TIMEOUT) {
-			log(username + " came online.")
+			log(this.toString() + " came online.")
 		}
 		if (timeoutId) {
 			clearTimeout(timeoutId);
 		}
 		timeoutId = setTimeout(() => {
-			log(username + " went offline.")
+			log(this.toString() + " went offline.")
 		}, TIMEOUT)
 		this.lastSeen = timeNow
 	}
@@ -44,7 +44,7 @@ function User(username, _password, _session, lastSeen) {
 
 	this.disconnect = function(socket, reason) {
 		api.emit(socket, api.calls.DISCONNECT, {reason: reason});
-		log("Disconnected " + this.username + ". Reason: " + reason);
+		log("Disconnected " + this.toString() + ". Reason: " + reason);
 		socket.disconnect(true);
 	}
 

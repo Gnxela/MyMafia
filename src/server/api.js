@@ -16,7 +16,7 @@ function API() {
 		CREATE_GAME: {action: "CREATE_GAME", data: {name: "", maxPlayers: 1, password: ""}},
 		JOIN_GAME: {action: "JOIN_GAME", data: {id: "", password: ""}},
 		//Game
-		GET_GAME: {action: "GET_GAME", data: {id: ""}},
+		GET_GAME: {action: "GET_GAME", data: {}},
 		NEW_FRAME: {action: "NEW_FRAME", data: {}},
 	};
 
