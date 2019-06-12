@@ -34,7 +34,7 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 			return;
 		}
 		this.users.push(user);
-		log(user.username + " joined <game " + id + ">");
+		log(user.toString() + " joined " + game.toString());
 	}
 
 	this.getCurrentFrame = function() {
@@ -52,6 +52,10 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 
 	this.checkPassword = function(passwd) {
 		return password === passwd;
+	}
+
+	this.toString = function() {
+		return "<game " + this.id + ">"
 	}
 
 	this.init();

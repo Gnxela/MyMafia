@@ -63,6 +63,10 @@ function User(username, _password, _session, lastSeen) {
 	this.getSession = function() {
 		return session;
 	}
+
+	this.toString = function() {
+		return "<user " + this.username + ">"
+	}
 }
 
 
