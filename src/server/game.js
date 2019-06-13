@@ -9,7 +9,7 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 	this.name = name;
 	this.maxPlayers = maxPlayers;
 	this.hasPassword = password !== "";
-	this.users = [];
+	this.users = [host];
 	this.inProgress = false;
 	this.isFinished = false;
 	this.frames = [];
@@ -17,6 +17,7 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 	this.init = function() {
 		this.frames.push(new Frame("Pre-game"));
 		this.getCurrentFrame().addAction("create_game", "%u created the game.", [host]);
+		this.getCurrentFrame().addAction("users", "Players: %u", this.users);
 	}
 
 	this.registerSocket = function(user, socket) {
@@ -34,7 +35,10 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 			return;
 		}
 		this.users.push(user);
-		log(user.toString() + " joined " + game.toString());
+		let currentFrame = this.getCurrentFrame();
+		currentFrame.actions[1].format += ", %u";
+		api.emitRoom(room, api.calls.UPDATE_FRAME, {frameIndex: 0, frame: currentFrame});
+		log(user.toString() + " joined " + this.toString());
 	}
 
 	this.getCurrentFrame = function() {

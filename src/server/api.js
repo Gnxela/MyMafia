@@ -18,6 +18,7 @@ function API() {
 		//Game
 		GET_GAME: {action: "GET_GAME", data: {}},
 		NEW_FRAME: {action: "NEW_FRAME", data: {}},
+		UPDATE_FRAME: {action: "UPDATE_FRAME", data: {}},
 	};
 
 	this.use = function(func) {
@@ -68,6 +69,10 @@ function API() {
 		})
 		await promise;
 		return xyz;
+	}
+
+	this.emitRoom = function(room, apiCall, data) {
+		server.roomSocket(room).emit(apiCall.action, {action: apiCall.action, data: data});
 	}
 
 	this.fail = function(err) {

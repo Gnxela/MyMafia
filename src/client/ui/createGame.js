@@ -8,7 +8,9 @@ function CreateGame() {
 			let nameInput = document.getElementById("name");
 			let maxPlayersInput = document.getElementById("maxPlayers");
 			let passwordInput = document.getElementById("password");
-			createGame(nameInput.value, parseInt(maxPlayersInput.value), passwordInput.value)
+			if (createGame(nameInput.value, parseInt(maxPlayersInput.value), passwordInput.value)) {
+				openPage("game");
+			}
 		});
 		container.appendChild(create);
 	}

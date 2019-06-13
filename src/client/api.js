@@ -15,6 +15,7 @@ function API(username, session) {
 		//Game
 		GET_GAME: {action: "GET_GAME", data: {game: {}}},
 		NEW_FRAME: {action: "NEW_FRAME", data: {frames: []}},
+		UPDATE_FRAME: {action: "UPDATE_FRAME", data: {frameIndex: 1, frame: {}}},
 	};
 
 	this.use = function(func) {
@@ -69,6 +70,9 @@ function API(username, session) {
 	}
 
 	function verifyData(apiCall, data) {
+		if (!data) {
+			return "Data is undefined: " + data;
+		}
 		let copiedData = JSON.parse(JSON.stringify(data));
 		for (let key in apiCall.data) {
 			if (typeof apiCall.data[key] != typeof data[key]) {

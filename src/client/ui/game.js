@@ -1,14 +1,34 @@
 function Game() {
+
+	let frames = [];
+
 	this.open = async function() {
 		container.innerHTML = 'Loading...';
 		let game = await getGame();
-		let frameContainer = createFrame(game.frames[game.frames.length - 1]);
+		frames = game.frames;
+		let frameContainer = createDiv("frame-container");
+		for (let i = 0; i < frames.length; i++) {
+			let frame = createFrame(i);
+			frameContainer.appendChild(frame);
+		}
 		container.innerHTML = '';
 		container.appendChild(frameContainer);
+
+		api.on(socket, api.calls.UPDATE_FRAME, (data) => {
+			frames[data.frameIndex] = data.frame;
+			updateFrame(data.frameIndex);
+		});
 	}
 
-	function createFrame(frame) {
-		let frameContainer = createDiv("frame-container");
+	function updateFrame(frameIndex) {
+		let newFrame = createFrame(frameIndex);
+		let domFrame = document.getElementById("frame-" + frameIndex);
+		domFrame.innerHTML = newFrame.innerHTML;
+	}
+
+	function createFrame(index) {
+		let frame = frames[index];
+		let frameContainer = createDiv("frame-" + index, "frame");
 
 		let frameHeader = createDiv("frame-header");
 		let framePrev = createButton("<", "frame-prev");

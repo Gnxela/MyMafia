@@ -1,7 +1,6 @@
 var socket;
 var api;
 var username;
-var currentGameID;
 
 async function joinGame(id, password) {
 	if (!password) {
@@ -11,7 +10,6 @@ async function joinGame(id, password) {
 	if (!data.ok) {
 		return false;
 	}
-	currentGameID = id;
 	return true;
 }
 
@@ -32,11 +30,8 @@ async function getGames() {
 }
 
 async function getGame() {
-	if (!currentGameID) {
-		return undefined;
-	}
 	try {
-		return (await api.emitSync(socket, api.calls.GET_GAME, {id: currentGameID})).game;
+		return (await api.emitSync(socket, api.calls.GET_GAME, {})).game;
 	} catch (e) {
 		throw new Error(e);
 	}
@@ -51,7 +46,6 @@ function init(games) {
 		let game = games[i];
 		for (let j = 0; j < game.users.length; j++) {
 			if (game.users[j].username === username) {
-				currentGameID = game.id;
 				openPage('game')
 				return;
 			}
