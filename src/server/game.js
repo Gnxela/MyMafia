@@ -56,14 +56,14 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 	this.createFrame = function(name) {
 		let frame = new Frame(name);
 		this.frames.push(frame);
-		api.emitRoom(room, api.calls.NEW_FRAME, {frame: frame});		
+		api.emitRoom(room, api.calls.NEW_FRAME, {frame: frame});
 		return frame;
 	}
 
 	this.updateCurrentFrame = function() {
 		this.updateFrame(this.frames.length - 1);
 	}
-	
+
 	this.updateFrame = function(frameIndex) {
 		api.emitRoom(room, api.calls.UPDATE_FRAME, {frameIndex: frameIndex, frame: this.frames[frameIndex]});
 	}
