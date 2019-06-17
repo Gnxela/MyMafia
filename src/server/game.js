@@ -15,12 +15,20 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 	this.frames = [];
 
 	this.init = function() {
-		this.frames.push(new Frame("Pre-game"));
-		this.getCurrentFrame().addAction("create_game", "%u created the game.", [host]);
-		this.getCurrentFrame().addAction("users", "Players: %u", this.users);
+		let frame = this.createFrame("Pre-game");
+		frame.addAction("create_game", "%u created the game.", [host]);
+		frame.addAction("users", "Players: %u", this.users);
 	}
 
 	this.registerSocket = function(user, socket) {
+		if (user === host) {
+			api.on(socket, api.calls.START_GAME, (user, data, ack) => {
+				this.startGame();
+				api.off(socket, api.calls.START_GAME);
+				ack(api.succ());
+			});
+		}
+
 		api.on(socket, api.calls.GET_GAME, (user, data, ack) => {
 			let game = this;
 			if (game.users.includes(user)) {
@@ -37,7 +45,7 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 		this.users.push(user);
 		let currentFrame = this.getCurrentFrame();
 		currentFrame.actions[1].format += ", %u";
-		api.emitRoom(room, api.calls.UPDATE_FRAME, {frameIndex: 0, frame: currentFrame});
+		this.updateCurrentFrame();
 		log(user.toString() + " joined " + this.toString());
 	}
 
@@ -45,13 +53,27 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 		return this.frames[this.frames.length - 1];
 	}
 
+	this.createFrame = function(name) {
+		let frame = new Frame(name);
+		this.frames.push(frame);
+		api.emitRoom(room, api.calls.NEW_FRAME, {frame: frame});		
+		return frame;
+	}
+
+	this.updateCurrentFrame = function() {
+		this.updateFrame(this.frames.length - 1);
+	}
+	
+	this.updateFrame = function(frameIndex) {
+		api.emitRoom(room, api.calls.UPDATE_FRAME, {frameIndex: frameIndex, frame: this.frames[frameIndex]});
+	}
+
 	this.startGame = function() {
-		if (inProgress) {
+		if (this.inProgress) {
 			return;
 		}
-		inProgress = true;
-		this.frames.push(new Frame("Night 0"));
-		api.emit(server.roomSocket(room), api.calls.NEW_FRAME, {frames: this.frames});
+		this.inProgress = true;
+		this.createFrame("Night-0");
 	}
 
 	this.checkPassword = function(passwd) {

@@ -14,7 +14,8 @@ function API(username, session) {
 		JOIN_GAME: {action: "JOIN_GAME", data: {ok: true, err: ""}},
 		//Game
 		GET_GAME: {action: "GET_GAME", data: {game: {}}},
-		NEW_FRAME: {action: "NEW_FRAME", data: {frames: []}},
+		START_GAME: {action: "START_GAME", data: {ok: true, err: ""}},
+		NEW_FRAME: {action: "NEW_FRAME", data: {frame: {}}},
 		UPDATE_FRAME: {action: "UPDATE_FRAME", data: {frameIndex: 1, frame: {}}},
 	};
 
@@ -28,6 +29,10 @@ function API(username, session) {
 
 	this.on = function(socket, apiCall, callback) {
 		on(true, socket, apiCall, callback);
+	}
+
+	this.off = function(socket, apiCall) {
+		socket.removeAllListeners(apiCall.action);
 	}
 
 	this.emit = async function(socket, apiCall, data, callback) {
