@@ -14,12 +14,12 @@ function Game() {
 		container.innerHTML = '';
 		container.appendChild(frameContainer);
 
-		api.on(socket, api.calls.NEW_FRAME, (data) => {
+		api.on(api.calls.NEW_FRAME, (data) => {
 			frames.push(data.frame);
 			let frame = createFrame(frames.length - 1);
 			frameContainer.appendChild(frame);
 		});
-		api.on(socket, api.calls.UPDATE_FRAME, (data) => {
+		api.on(api.calls.UPDATE_FRAME, (data) => {
 			frames[data.frameIndex] = data.frame;
 			updateFrame(data.frameIndex);
 		});

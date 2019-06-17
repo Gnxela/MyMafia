@@ -1,12 +1,10 @@
-var socket;
 var api;
-var username;
 
 async function joinGame(id, password) {
 	if (!password) {
 		password = "";
 	}
-	let data = await api.emitSync(socket, api.calls.JOIN_GAME, {id: id, password: password});
+	let data = await api.emitSync(api.calls.JOIN_GAME, {id: id, password: password});
 	if (!data.ok) {
 		return false;
 	}
@@ -14,7 +12,7 @@ async function joinGame(id, password) {
 }
 
 async function createGame(name, maxPlayers, password) {
-	let data = await api.emitSync(socket, api.calls.CREATE_GAME, {name: name, maxPlayers: maxPlayers, password: password});
+	let data = await api.emitSync(api.calls.CREATE_GAME, {name: name, maxPlayers: maxPlayers, password: password});
 	if (data.ok === false) {
 		return false;
 	}
@@ -23,7 +21,7 @@ async function createGame(name, maxPlayers, password) {
 
 async function getGames() {
 	try {
-		return (await api.emitSync(socket, api.calls.GET_GAMES, {})).games;
+		return (await api.emitSync(api.calls.GET_GAMES, {})).games;
 	} catch (e) {
 		throw new Error(e);
 	}
@@ -31,35 +29,32 @@ async function getGames() {
 
 async function getGame() {
 	try {
-		return (await api.emitSync(socket, api.calls.GET_GAME, {})).game;
+		return (await api.emitSync(api.calls.GET_GAME, {})).game;
 	} catch (e) {
 		throw new Error(e);
 	}
 }
 
-function init(games) {
+async function init(games) {
 	setInterval(() => {
-		api.emit(socket, api.calls.HEARTBEAT, {});
+		api.emit(api.calls.HEARTBEAT, {});
 	}, 1000);
 	//If we're in a game open the page.
-	for (let i = 0; i < games.length; i++) {
-		let game = games[i];
-		for (let j = 0; j < game.users.length; j++) {
-			if (game.users[j].username === username) {
-				openPage('game')
-				return;
-			}
-		}
+	let data = await api.emitSync(api.calls.GET_PATHS, {});
+	if (data.paths.includes("GET_GAME")) {
+		openPage('game');
+		return;
 	}
 	openPage("lobby");
 }
 
-function preload() {
-	setupSocket();
+function preload(socket) {
+	setupSocket(socket);
 	handshake();
 }
 
-function setupSocket() {
+function setupSocket(socket) {
+	let username = "";
 	let session = "";
 	let cookies = document.cookie.split("; ");
 	for (let i = 0; i < cookies.length; i++) {
@@ -70,18 +65,18 @@ function setupSocket() {
 			session = cookies[i].substring(8);
 		}
 	}
-	api = new API(username, session);
-	api.on(socket, api.calls.DISCONNECT, (data) => {
+	api = new API(socket, username, session);
+	api.on(api.calls.DISCONNECT, (data) => {
 		log("Server disconnected socket. Reason: " + data.reason);
 		socket.disconnect(true);
 	});
 }
 
 function handshake() {
-	api.once(socket, api.calls.WELCOME, (data) => {
+	api.once(api.calls.WELCOME, (data) => {
 		init(data.games);
 	});
-	api.emit(socket, api.calls.HANDSHAKE, {});
+	api.emit(api.calls.HANDSHAKE, {});
 }
 
 function log(str, obj) {
@@ -102,6 +97,6 @@ function error(str, obj) {
 
 window.onload = function() {
 	socket = io();
-	preload();
+	preload(socket);
 	container = document.getElementById("container"); //ui.js
 }

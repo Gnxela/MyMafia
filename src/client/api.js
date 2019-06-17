@@ -1,4 +1,4 @@
-function API(username, session) {
+function API(socket, username, session) {
 	var middleware = [];
 
 	this.calls = { //API calls RECEIVED by the client.
@@ -23,19 +23,19 @@ function API(username, session) {
 		middleware.push(func);
 	}
 
-	this.once = function(socket, apiCall, callback) {
-		on(false, socket, apiCall, callback);
+	this.once = function(apiCall, callback) {
+		on(false, apiCall, callback);
 	}
 
-	this.on = function(socket, apiCall, callback) {
-		on(true, socket, apiCall, callback);
+	this.on = function(apiCall, callback) {
+		on(true, apiCall, callback);
 	}
 
-	this.off = function(socket, apiCall) {
+	this.off = function(apiCall) {
 		socket.removeAllListeners(apiCall.action);
 	}
 
-	this.emit = async function(socket, apiCall, data, callback) {
+	this.emit = async function(apiCall, data, callback) {
 		if (!socket || !socket.emit) {
 			throw new Error("Socket not defined/incorrect.");
 		}
@@ -54,10 +54,10 @@ function API(username, session) {
 		});
 	}
 
-	this.emitSync = async function(socket, apiCall, data) {
+	this.emitSync = async function(apiCall, data) {
 		let xyz;
 		let promise = new Promise((resolve, reject) => {
-			this.emit(socket, apiCall, data, (callbackData) => {
+			this.emit(apiCall, data, (callbackData) => {
 				xyz = callbackData;
 				resolve();
 			});
@@ -91,7 +91,7 @@ function API(username, session) {
 		return "";
 	}
 
-	function on(func, socket, apiCall, callback) {
+	function on(func, apiCall, callback) {
 		if (!socket) {
 			throw new Error( "socket is not defined.");
 		}
@@ -106,7 +106,7 @@ function API(username, session) {
 			if (err) {
 				throw new Error("on(" + apiCall.action + "): " + err);
 			}
-			if (!runMiddleware(socket, data)) {
+			if (!runMiddleware(data)) {
 				log("Failed packet: " + apiCall.action + ":" + JSON.stringify(data));
 				return;
 			}
@@ -119,7 +119,7 @@ function API(username, session) {
 		}
 	}
 
-	function runMiddleware(socket, data) {
+	function runMiddleware(data) {
 		for (let i = 0; i < middleware.length; i++) {
 			if (!middleware[i] || !middleware[i](socket, data)) {
 				return false;
