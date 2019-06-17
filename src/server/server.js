@@ -65,6 +65,12 @@ function Server(http) {
 		return io.to(room);
 	}
 
+	this.close = function() {
+		log("Exiting.");
+		io.emit(api.calls.DISCONNECT.action, {data: {reason: "Server closing."}});
+		io.close();
+	}
+
 	var addMiddleware = function() {
 		api.use((socket, data) => {
 			let user = users[data.username];

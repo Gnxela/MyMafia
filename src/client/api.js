@@ -104,7 +104,7 @@ function API(username, session) {
 		let call = function(data, ackCallback) {
 			let err = verifyData(apiCall, data.data);
 			if (err) {
-				throw new Error("on(): " + err);
+				throw new Error("on(" + apiCall.action + "): " + err);
 			}
 			if (!runMiddleware(socket, data)) {
 				log("Failed packet: " + apiCall.action + ":" + JSON.stringify(data));

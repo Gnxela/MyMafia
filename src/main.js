@@ -13,6 +13,11 @@ var httpHandler = new require('./httpHandler.js')(app, http);
 var Server = require('./server/server.js');
 global.server = new Server(http);
 
+process.on('SIGINT', function(code) {
+	server.close();
+	process.exit();
+});
+
 function defineGlobals() {
 	global.error = function(str, obj) {
 		if (obj) {
