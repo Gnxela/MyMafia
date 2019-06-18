@@ -16,6 +16,6 @@ Make game
 		2. Apply roles when game starts
 		3. Get role API call
 		4. Night/Day actions
-	5. Special Actions (guns, etc.)
+	5. Special Actions (guns, etc.). EventEmitter might be useful rather than hardcoding all items in.
 	*. Host special actions
 		- Force next frame
