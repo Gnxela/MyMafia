@@ -1,8 +1,11 @@
 var Frame = require("./frame.js");
+var Emitter = require("./emitter.js");
+var events = require("./events.js");
 
 function Game(api, id, host, name, maxPlayers, passwd) {
 	var password = passwd;
 	var room = "game-" + id;
+	var emitter = new Emitter();
 
 	this.id = id;
 	this.host = host;
@@ -21,6 +24,7 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 	}
 
 	this.registerSocket = function(user, socket) {
+		emitter.emit(events.SOCKET_LOAD. {user: user, socket: socket})
 		if (user === host) {
 			api.on(socket, api.calls.START_GAME, (user, data, ack) => {
 				this.startGame();
@@ -43,6 +47,7 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 			return;
 		}
 		this.users.push(user);
+		emitter.emit(events.USER_JOIN. {user: user})		
 		let currentFrame = this.getCurrentFrame();
 		currentFrame.actions[1].format += ", %u";
 		this.updateCurrentFrame();
