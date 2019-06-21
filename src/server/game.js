@@ -47,7 +47,7 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 			return;
 		}
 		this.users.push(user);
-		emitter.emit(events.USER_JOIN. {user: user})		
+		emitter.emit(events.USER_JOIN. {user: user})
 		let currentFrame = this.getCurrentFrame();
 		currentFrame.actions[1].format += ", %u";
 		this.updateCurrentFrame();
