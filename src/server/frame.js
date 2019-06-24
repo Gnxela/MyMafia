@@ -1,5 +1,3 @@
-var Action = require("./action.js");
-
 function Frame(name) {
 
 	this.name = name;
@@ -9,6 +7,12 @@ function Frame(name) {
 		this.actions.push(new Action(type, format, users));
 	}
 
+}
+
+function Action(type, format, users) {
+	this.type = type;
+	this.format = format;
+	this.users = users;
 }
 
 exports = module.exports = Frame;

@@ -20,12 +20,13 @@ function Game() {
 			frameContainer.appendChild(frame);
 		});
 		api.on(api.calls.UPDATE_FRAME, (data) => {
-			frames[data.frameIndex] = data.frame;
-			updateFrame(data.frameIndex);
+			frames[frames.length - 1] = data.frame;
+			updateFrame();
 		});
 	}
 
-	function updateFrame(frameIndex) {
+	function updateFrame() {
+		let frameIndex = frames.length - 1;
 		let newFrame = createFrame(frameIndex);
 		let domFrame = document.getElementById("frame-" + frameIndex);
 		domFrame.innerHTML = newFrame.innerHTML;

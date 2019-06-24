@@ -16,7 +16,9 @@ function API(socket, username, session) {
 		GET_GAME: {action: "GET_GAME", data: {game: {}}},
 		START_GAME: {action: "START_GAME", data: {ok: true, err: ""}},
 		NEW_FRAME: {action: "NEW_FRAME", data: {frame: {}}},
-		UPDATE_FRAME: {action: "UPDATE_FRAME", data: {frameIndex: 1, frame: {}}},
+		UPDATE_FRAME: {action: "UPDATE_FRAME", data: {frame: {}}},
+		START_VOTE: {action: "START_VOTE", data: {name: "", targets: []}},
+		END_VOTE: {action: "END_VOTE", data: {}},
 	};
 
 	this.use = function(func) {

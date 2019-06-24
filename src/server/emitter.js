@@ -9,6 +9,9 @@ function Emitter() {
 		let canceled = false;
 		let cancel = function() {canceled = true;};
 		let listeners = eventListeners[event];
+		if (!listeners) {
+			return data;
+		}
 		let toBeRemoved = [];
 		for (let i = 0; i < listeners.length; i++) {
 			let listener = listeners[i];

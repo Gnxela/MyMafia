@@ -20,6 +20,8 @@ function API() {
 		START_GAME: {action: "START_GAME", data: {}},
 		NEW_FRAME: {action: "NEW_FRAME", data: {}},
 		UPDATE_FRAME: {action: "UPDATE_FRAME", data: {}},
+		START_VOTE: {action: "START_VOTE", data: {}},
+		END_VOTE: {action: "END_VOTE", data: {}},
 	};
 
 	this.use = function(func) {

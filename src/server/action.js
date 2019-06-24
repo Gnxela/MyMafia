@@ -1,7 +1,8 @@
-function Action(type, format, users) {
-	this.type = type;
-	this.format = format;
-	this.users = users;
+function Action(id, actionName, user, targets) {
+	this.id = id;
+	this.actionName = actionName;
+	this.user = user;
+	this.targets = targets;
 }
 
 exports = module.exports = Action;

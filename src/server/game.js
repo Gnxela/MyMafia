@@ -1,12 +1,9 @@
 var Frame = require("./frame.js");
 var Emitter = require("./emitter.js");
+var TargetGenerator = require("./targetGenerator.js");
 var events = require("./events.js");
 
 function Game(api, id, host, name, maxPlayers, passwd) {
-	var password = passwd;
-	var room = "game-" + id;
-	var emitter = new Emitter();
-
 	this.id = id;
 	this.host = host;
 	this.name = name;
@@ -16,6 +13,18 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 	this.inProgress = false;
 	this.isFinished = false;
 	this.frames = [];
+	this.timings = {
+		night: 30,
+		day: 60,
+		dayVote: 15,
+	}
+
+	var password = passwd;
+	var room = "game-" + id;
+	var emitter = new Emitter();
+	var targetGenerator = new TargetGenerator(this.users);
+	var resolveSleep;
+	//var roles = {}; //username -> Role
 
 	this.init = function() {
 		let frame = this.createFrame("Pre-game");
@@ -24,7 +33,7 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 	}
 
 	this.registerSocket = function(user, socket) {
-		emitter.emit(events.SOCKET_LOAD. {user: user, socket: socket})
+		emitter.emit(events.SOCKET_LOAD, {user: user, socket: socket})
 		if (user === host) {
 			api.on(socket, api.calls.START_GAME, (user, data, ack) => {
 				this.startGame();
@@ -47,11 +56,30 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 			return;
 		}
 		this.users.push(user);
-		emitter.emit(events.USER_JOIN. {user: user})
+		emitter.emit(events.USER_JOIN, {user: user})
 		let currentFrame = this.getCurrentFrame();
 		currentFrame.actions[1].format += ", %u";
 		this.updateCurrentFrame();
 		log(user.toString() + " joined " + this.toString());
+	}
+
+	this.startGame = function() {
+		if (this.inProgress) {
+			return;
+		}
+		this.inProgress = true;
+		this.runCycle(0);
+	}
+
+	//Runs one day/night cycle
+	this.runCycle = async function(nightNumber) {
+		this.createFrame("Night-" + nightNumber);
+		await sleep(this.timings.night * 1000);
+		this.createFrame("Day-" + (nightNumber + 1));
+		await sleep(this.timings.day * 1000);
+		// Start vote
+		await sleep(this.timings.dayVote * 1000);
+		// End vote
 	}
 
 	this.getCurrentFrame = function() {
@@ -73,20 +101,19 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 		api.emitRoom(room, api.calls.UPDATE_FRAME, {frameIndex: frameIndex, frame: this.frames[frameIndex]});
 	}
 
-	this.startGame = function() {
-		if (this.inProgress) {
-			return;
-		}
-		this.inProgress = true;
-		this.createFrame("Night-0");
-	}
-
 	this.checkPassword = function(passwd) {
 		return password === passwd;
 	}
 
 	this.toString = function() {
 		return "<game " + this.id + ">"
+	}
+
+	function sleep(ms) {
+		return new Promise(resolve => {
+			resolveSleep = resolve;
+			setTimeout(resolve, ms);
+		});
 	}
 
 	this.init();
