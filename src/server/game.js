@@ -73,9 +73,9 @@ function Game(api, id, host, name, maxPlayers, passwd) {
 
 	//Runs one day/night cycle
 	this.runCycle = async function(nightNumber) {
-		this.createFrame("Night-" + nightNumber);
+		this.createFrame("Night " + nightNumber);
 		await sleep(this.timings.night * 1000);
-		this.createFrame("Day-" + (nightNumber + 1));
+		this.createFrame("Day " + (nightNumber + 1));
 		await sleep(this.timings.day * 1000);
 		// Start vote
 		await sleep(this.timings.dayVote * 1000);
