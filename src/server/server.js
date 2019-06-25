@@ -81,7 +81,7 @@ function Server(http) {
 				return false;
 			}
 			if (!user.isLoggedIn(data.session)) {
-				user.disconnect();
+				user.disconnect(socket, "Invalid session.");
 				return false;
 			}
 			return true;
